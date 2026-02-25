@@ -137,9 +137,9 @@
 [data-theme="solarized-dark"] {
   --term-bg: #002b36;
   --term-bg-light: #073642;
-  --term-bg-panel: #586e75;
-  --term-fg: #839496;
-  --term-fg-dim: #657b83;
+  --term-bg-panel: #0b3b46;
+  --term-fg: #93a1a1;
+  --term-fg-dim: #839496;
   --term-green: #859900;
   --term-blue: #268bd2;
   --term-yellow: #b58900;
@@ -148,7 +148,7 @@
   --term-cyan: #2aa198;
   --term-orange: #cb4b16;
   --term-pink: #d33682;
-  --glass-border: rgba(88, 110, 117, 0.4);
+  --glass-border: rgba(130, 138, 138, 0.4);
 }
 
 /* ── Theme: One Dark ── */
