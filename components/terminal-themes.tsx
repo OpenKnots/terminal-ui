@@ -18,6 +18,7 @@ export const THEMES = [
   { id: 'solarized-dark', name: 'Solarized Dark', accent: '#268bd2' },
   { id: 'one-dark', name: 'One Dark', accent: '#61afef' },
   { id: 'gruvbox', name: 'Gruvbox', accent: '#b8bb26' },
+  { id: 'catppuccin-mocha', name: 'Catppuccin Mocha', accent: '#cba6f7' },
 ] as const
 
 export type ThemeId = (typeof THEMES)[number]['id']

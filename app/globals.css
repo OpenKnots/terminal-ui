@@ -187,6 +187,24 @@
   --glass-border: rgba(146, 131, 116, 0.4);
 }
 
+/* ── Theme: Catppuccin Mocha ── */
+[data-theme="catppuccin-mocha"] {
+  --term-bg: #1e1e2e;
+  --term-bg-light: #242435;
+  --term-bg-panel: #313244;
+  --term-fg: #cdd6f4;
+  --term-fg-dim: #a6adc8;
+  --term-green: #a6e3a1;
+  --term-blue: #89b4fa;
+  --term-yellow: #f9e2af;
+  --term-red: #f38ba8;
+  --term-purple: #cba6f7;
+  --term-cyan: #94e2d5;
+  --term-orange: #fab387;
+  --term-pink: #f5c2e7;
+  --glass-border: rgba(69, 71, 90, 0.6);
+}
+
 body {
   background: var(--term-bg);
   color: var(--term-fg);
