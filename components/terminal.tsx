@@ -1,7 +1,7 @@
 'use client'
 
-import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react'
-import { Minimize2, Maximize2, X } from 'lucide-react'
+import { createContext, ReactNode, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { Check, Copy, Minimize2, Maximize2, X } from 'lucide-react'
 
 interface TerminalProps {
   children: ReactNode
@@ -30,6 +30,32 @@ const TerminalPromptContext = createContext('$')
  * ```
  */
 export function Terminal({ children, title = 'Terminal', prompt = '$', className = '' }: TerminalProps) {
+  const contentRef = useRef<HTMLDivElement>(null)
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const [copied, setCopied] = useState(false)
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+    }
+  }, [])
+
+  async function handleCopy() {
+    const text = contentRef.current?.innerText.trim()
+    if (!text) return
+
+    try {
+      await navigator.clipboard.writeText(text)
+      setCopied(true)
+      if (timeoutRef.current) clearTimeout(timeoutRef.current)
+      timeoutRef.current = setTimeout(() => setCopied(false), 2000)
+    } catch {
+      // Ignore clipboard errors in unsupported environments.
+    }
+  }
+
   return (
     <div className={`flex flex-col bg-[var(--term-bg-light)] border border-[var(--glass-border)] rounded-lg overflow-hidden ${className}`}>
       {/* Window Chrome */}
@@ -42,15 +68,18 @@ export function Terminal({ children, title = 'Terminal', prompt = '$', className
         <div className="text-xs text-[var(--term-fg-dim)] font-mono">
           {title}
         </div>
-        <div className="flex items-center gap-2 opacity-0">
-          <Minimize2 size={12} />
-          <Maximize2 size={12} />
-          <X size={12} />
-        </div>
+        <button
+          type="button"
+          aria-label={copied ? 'Copied terminal content' : 'Copy terminal content'}
+          onClick={handleCopy}
+          className="inline-flex h-6 w-6 items-center justify-center rounded border border-[var(--glass-border)] text-[var(--term-fg-dim)] transition-colors hover:text-[var(--term-fg)] hover:bg-[var(--glass-bg)]"
+        >
+          {copied ? <Check size={12} className="text-[var(--term-green)]" /> : <Copy size={12} />}
+        </button>
       </div>
       
       {/* Terminal Content */}
-      <div className="terminal-scroll min-h-0 flex-1 overflow-auto p-4 font-mono text-sm">
+      <div ref={contentRef} className="terminal-scroll min-h-0 flex-1 overflow-auto p-4 font-mono text-sm">
         <TerminalPromptContext.Provider value={prompt}>{children}</TerminalPromptContext.Provider>
       </div>
     </div>

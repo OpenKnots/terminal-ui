@@ -65,6 +65,17 @@ export default function PlaygroundPage() {
 
       <section className="flex flex-col gap-2">
         <h2 className="text-lg font-semibold font-mono text-[var(--term-fg)]">
+          Copy Button
+        </h2>
+        <Terminal title="copy-demo.sh">
+          <TerminalCommand>pnpm run build</TerminalCommand>
+          <TerminalOutput type="success">Compiled successfully in 1.2s</TerminalOutput>
+          <TerminalOutput type="info">Click the copy icon in the header to copy this output.</TerminalOutput>
+        </Terminal>
+      </section>
+
+      <section className="flex flex-col gap-2">
+        <h2 className="text-lg font-semibold font-mono text-[var(--term-fg)]">
           Typing Animation
         </h2>
         <Terminal title="deploy-log.sh">
