@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useRef, useState } from 'react'
 import { Terminal, TerminalCommand, TerminalOutput } from '@/components/terminal'
+import { TerminalProgress } from '@/components/terminal-progress'
 
 type OutputType = 'normal' | 'success' | 'error' | 'info' | 'warning'
 
@@ -16,6 +17,13 @@ type Line =
       kind: 'output'
       text: string
       type: OutputType
+    }
+  | {
+      id: number
+      kind: 'progress'
+      label: string
+      percent: number
+      variant: 'green' | 'blue' | 'yellow' | 'red' | 'purple' | 'cyan'
     }
 
 const PROMPT = 'guest@openknots'
@@ -65,6 +73,7 @@ export function InteractiveTerminal() {
             { id: nextId(), kind: 'output', type: 'normal', text: 'help      show commands' },
             { id: nextId(), kind: 'output', type: 'normal', text: 'about     project summary' },
             { id: nextId(), kind: 'output', type: 'normal', text: 'echo      print text' },
+            { id: nextId(), kind: 'output', type: 'normal', text: 'progress  show progress bars demo' },
             { id: nextId(), kind: 'output', type: 'normal', text: 'date      show current date/time' },
             { id: nextId(), kind: 'output', type: 'normal', text: 'clear     clear terminal output' },
           )
@@ -84,6 +93,15 @@ export function InteractiveTerminal() {
             type: argText ? 'normal' : 'warning',
             text: argText || 'Usage: echo <text>',
           })
+          break
+        case 'progress':
+          next.push(
+            { id: nextId(), kind: 'output', type: 'info', text: 'TerminalProgress demo:' },
+            { id: nextId(), kind: 'progress', label: 'Installing...', percent: 40, variant: 'green' },
+            { id: nextId(), kind: 'progress', label: 'Building...', percent: 75, variant: 'blue' },
+            { id: nextId(), kind: 'progress', label: 'Deploying...', percent: 100, variant: 'cyan' },
+            { id: nextId(), kind: 'progress', label: 'Errors', percent: 12, variant: 'red' },
+          )
           break
         case 'date':
           next.push({
@@ -119,17 +137,30 @@ export function InteractiveTerminal() {
         onClick={() => inputRef.current?.focus()}
         role="presentation"
       >
-        {lines.map((line) =>
-          line.kind === 'command' ? (
-            <TerminalCommand key={line.id} prompt={PROMPT}>
-              {line.text}
-            </TerminalCommand>
-          ) : (
+        {lines.map((line) => {
+          if (line.kind === 'command') {
+            return (
+              <TerminalCommand key={line.id} prompt={PROMPT}>
+                {line.text}
+              </TerminalCommand>
+            )
+          }
+          if (line.kind === 'progress') {
+            return (
+              <TerminalProgress
+                key={line.id}
+                label={line.label}
+                percent={line.percent}
+                variant={line.variant}
+              />
+            )
+          }
+          return (
             <TerminalOutput key={line.id} type={line.type}>
               {line.text}
             </TerminalOutput>
-          ),
-        )}
+          )
+        })}
 
         <form onSubmit={onSubmit} className="mt-2 flex items-center gap-2">
           <span className="select-none text-[var(--term-green)]">{PROMPT}</span>

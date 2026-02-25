@@ -85,3 +85,5 @@ export function TerminalSpinner({ text }: TerminalSpinnerProps) {
     </div>
   )
 }
+
+export { TerminalProgress } from './terminal-progress'
