@@ -15,6 +15,9 @@ export const THEMES = [
   { id: 'nord', name: 'Nord', accent: '#81a1c1' },
   { id: 'monokai', name: 'Monokai', accent: '#a6e22e' },
   { id: 'github-dark', name: 'GitHub Dark', accent: '#58a6ff' },
+  { id: 'solarized-dark', name: 'Solarized Dark', accent: '#268bd2' },
+  { id: 'one-dark', name: 'One Dark', accent: '#61afef' },
+  { id: 'gruvbox', name: 'Gruvbox', accent: '#b8bb26' },
 ] as const
 
 export type ThemeId = (typeof THEMES)[number]['id']
