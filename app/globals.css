@@ -133,6 +133,60 @@
   --glass-border: rgba(48, 54, 61, 0.8);
 }
 
+/* ── Theme: Solarized Dark ── */
+[data-theme="solarized-dark"] {
+  --term-bg: #002b36;
+  --term-bg-light: #073642;
+  --term-bg-panel: #094554;
+  --term-fg: #839496;
+  --term-fg-dim: #586e75;
+  --term-green: #859900;
+  --term-blue: #268bd2;
+  --term-yellow: #b58900;
+  --term-red: #dc322f;
+  --term-purple: #6c71c4;
+  --term-cyan: #2aa198;
+  --term-orange: #cb4b16;
+  --term-pink: #d33682;
+  --glass-border: rgba(7, 54, 66, 0.8);
+}
+
+/* ── Theme: One Dark ── */
+[data-theme="one-dark"] {
+  --term-bg: #282c34;
+  --term-bg-light: #2e333d;
+  --term-bg-panel: #3a404b;
+  --term-fg: #abb2bf;
+  --term-fg-dim: #5c6370;
+  --term-green: #98c379;
+  --term-blue: #61afef;
+  --term-yellow: #e5c07b;
+  --term-red: #e06c75;
+  --term-purple: #c678dd;
+  --term-cyan: #56b6c2;
+  --term-orange: #d19a66;
+  --term-pink: #e06c75;
+  --glass-border: rgba(92, 99, 112, 0.35);
+}
+
+/* ── Theme: Gruvbox ── */
+[data-theme="gruvbox"] {
+  --term-bg: #282828;
+  --term-bg-light: #32302f;
+  --term-bg-panel: #3c3836;
+  --term-fg: #ebdbb2;
+  --term-fg-dim: #a89984;
+  --term-green: #b8bb26;
+  --term-blue: #83a598;
+  --term-yellow: #fabd2f;
+  --term-red: #fb4934;
+  --term-purple: #d3869b;
+  --term-cyan: #8ec07c;
+  --term-orange: #fe8019;
+  --term-pink: #d3869b;
+  --glass-border: rgba(80, 73, 69, 0.6);
+}
+
 body {
   background: var(--term-bg);
   color: var(--term-fg);
