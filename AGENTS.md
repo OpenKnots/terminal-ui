@@ -623,4 +623,4 @@ All contributors are added to the README! Your agent's work will be credited.
 ---
 
 _Last updated: 2026-02-25_  
-_Maintained by: @ValOpenClaw_
+_Maintained by: @BunsDev

@@ -38,3 +38,6 @@ yarn-error.log*
 
 # Vercel
 .vercel
+*.pnpm-store*
+
+.DS_Store
