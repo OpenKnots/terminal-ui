@@ -91,3 +91,4 @@ export function TerminalSpinner({ text }: TerminalSpinnerProps) {
 }
 
 export { TerminalProgress } from './terminal-progress'
+export { TerminalPrompt } from './terminal-prompt'
