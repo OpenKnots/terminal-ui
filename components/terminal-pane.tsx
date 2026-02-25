@@ -11,13 +11,14 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { useTheme, THEMES, type ThemeId } from '@/components/terminal-themes'
 import { cn } from '@/lib/utils'
+import { TerminalProgress } from './terminal-progress'
 
 type OutputStyle = 'normal' | 'success' | 'error' | 'info' | 'warning' | 'dim'
 
 interface Line {
   id: number
   kind: 'command' | 'output'
-  text: string
+  text: string | React.ReactNode
   style?: OutputStyle
 }
 
@@ -136,6 +137,7 @@ export function TerminalPane({
             out('  theme [name]     switch theme'),
             out('  split            split terminal pane'),
             out('  tab              open new tab'),
+            out('  progress         show progress bar demo'),
             out('  clear            clear screen'),
             out(''),
             out('  ↑/↓              command history', 'dim'),
@@ -288,6 +290,24 @@ export function TerminalPane({
         case 'tab':
           push([cmdLine, out('Opening new tab...', 'info')])
           onNewTab?.()
+          return
+
+        case 'progress':
+          push([
+            cmdLine,
+            out('Starting installation...', 'info'),
+            {
+              id: nextId(),
+              kind: 'output',
+              text: <TerminalProgress percent={45} label="Fetching packages" />,
+            },
+            {
+              id: nextId(),
+              kind: 'output',
+              text: <TerminalProgress percent={100} label="Building assets" />,
+            },
+            out('Installation complete!', 'success'),
+          ])
           return
 
         default:
