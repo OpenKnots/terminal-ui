@@ -12,6 +12,8 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { useTheme, THEMES, type ThemeId } from '@/components/terminal-themes'
 import { cn } from '@/lib/utils'
 import { TerminalProgress } from './terminal-progress'
+import { TerminalTable } from './terminal-table'
+import { TerminalTree } from './terminal-tree'
 
 type OutputStyle = 'normal' | 'success' | 'error' | 'info' | 'warning' | 'dim'
 
@@ -138,6 +140,8 @@ export function TerminalPane({
             out('  split            split terminal pane'),
             out('  tab              open new tab'),
             out('  progress         show progress bar demo'),
+            out('  table            show data table demo'),
+            out('  tree             show directory tree demo'),
             out('  clear            clear screen'),
             out(''),
             out('  ↑/↓              command history', 'dim'),
@@ -307,6 +311,65 @@ export function TerminalPane({
               text: <TerminalProgress percent={100} label="Building assets" />,
             },
             out('Installation complete!', 'success'),
+          ])
+          return
+
+        case 'table':
+          push([
+            cmdLine,
+            out('Displaying sample data table...'),
+            {
+              id: nextId(),
+              kind: 'output',
+              text: (
+                <TerminalTable
+                  columns={[
+                    { header: 'Name', width: 15 },
+                    { header: 'Status', width: 12, align: 'center' },
+                    { header: 'Size', width: 10, align: 'right' },
+                  ]}
+                  rows={[
+                    { cells: ['index.tsx', 'Ready', '2.5 KB'] },
+                    { cells: ['styles.css', 'Ready', '1.2 KB'] },
+                    { cells: ['utils.ts', 'Ready', '3.8 KB'], style: 'success' },
+                  ]}
+                />
+              ),
+            },
+          ])
+          return
+
+        case 'tree':
+          push([
+            cmdLine,
+            out('Displaying directory tree...'),
+            {
+              id: nextId(),
+              kind: 'output',
+              text: (
+                <TerminalTree
+                  nodes={[
+                    {
+                      label: 'src/',
+                      icon: '📁',
+                      expanded: true,
+                      children: [
+                        {
+                          label: 'components/',
+                          icon: '📁',
+                          expanded: true,
+                          children: [
+                            { label: 'Terminal.tsx', icon: '📄' },
+                            { label: 'Progress.tsx', icon: '📄' },
+                          ],
+                        },
+                        { label: 'utils.ts', icon: '📄' },
+                      ],
+                    },
+                  ]}
+                />
+              ),
+            },
           ])
           return
 

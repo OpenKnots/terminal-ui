@@ -3,6 +3,12 @@
 import { ReactNode } from 'react'
 import { Minimize2, Maximize2, X } from 'lucide-react'
 
+// Export advanced components
+export { TerminalProgress, type TerminalProgressProps } from './terminal-progress'
+export { TerminalTable, type TerminalTableColumn, type TerminalTableRow, type TerminalTableProps } from './terminal-table'
+export { TerminalPrompt, type TerminalPromptProps } from './terminal-prompt'
+export { TerminalTree, type TreeNode, type TerminalTreeProps } from './terminal-tree'
+
 interface TerminalProps {
   children: ReactNode
   title?: string
