@@ -3,6 +3,7 @@
 import { FormEvent, useEffect, useRef, useState } from 'react'
 import { Terminal, TerminalCommand, TerminalOutput } from '@/components/terminal'
 import { TerminalProgress } from '@/components/terminal-progress'
+import { TerminalTable } from '@/components/terminal-table'
 
 type OutputType = 'normal' | 'success' | 'error' | 'info' | 'warning'
 
@@ -24,6 +25,12 @@ type Line =
       label: string
       percent: number
       variant: 'green' | 'blue' | 'yellow' | 'red' | 'purple' | 'cyan'
+    }
+  | {
+      id: number
+      kind: 'table'
+      headers: string[]
+      rows: string[][]
     }
 
 const PROMPT = 'guest@openknots'
@@ -74,6 +81,7 @@ export function InteractiveTerminal() {
             { id: nextId(), kind: 'output', type: 'normal', text: 'about     project summary' },
             { id: nextId(), kind: 'output', type: 'normal', text: 'echo      print text' },
             { id: nextId(), kind: 'output', type: 'normal', text: 'progress  show progress bars demo' },
+            { id: nextId(), kind: 'output', type: 'normal', text: 'table     show table demo' },
             { id: nextId(), kind: 'output', type: 'normal', text: 'date      show current date/time' },
             { id: nextId(), kind: 'output', type: 'normal', text: 'clear     clear terminal output' },
           )
@@ -101,6 +109,22 @@ export function InteractiveTerminal() {
             { id: nextId(), kind: 'progress', label: 'Building...', percent: 75, variant: 'blue' },
             { id: nextId(), kind: 'progress', label: 'Deploying...', percent: 100, variant: 'cyan' },
             { id: nextId(), kind: 'progress', label: 'Errors', percent: 12, variant: 'red' },
+          )
+          break
+        case 'table':
+          next.push(
+            { id: nextId(), kind: 'output', type: 'info', text: 'TerminalTable demo:' },
+            {
+              id: nextId(),
+              kind: 'table',
+              headers: ['Package', 'Version', 'Size'],
+              rows: [
+                ['react', '19.0.0', '142 kB'],
+                ['next', '16.1.6', '540 kB'],
+                ['typescript', '5.7.0', '38 kB'],
+                ['tailwindcss', '4.2.1', '210 kB'],
+              ],
+            },
           )
           break
         case 'date':
@@ -152,6 +176,15 @@ export function InteractiveTerminal() {
                 label={line.label}
                 percent={line.percent}
                 variant={line.variant}
+              />
+            )
+          }
+          if (line.kind === 'table') {
+            return (
+              <TerminalTable
+                key={line.id}
+                headers={line.headers}
+                rows={line.rows}
               />
             )
           }
