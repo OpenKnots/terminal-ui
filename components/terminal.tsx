@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, ReactNode, useContext } from 'react'
+import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react'
 import { Minimize2, Maximize2, X } from 'lucide-react'
 
 interface TerminalProps {
@@ -90,11 +90,16 @@ export function TerminalCommand({ children, prompt }: TerminalCommandProps) {
 interface TerminalOutputProps {
   children: ReactNode
   type?: 'normal' | 'success' | 'error' | 'info' | 'warning'
+  /** Enable character-by-character typing animation (string children only). */
+  animate?: boolean
+  /** Milliseconds between each character when animating (default: 35, min: 10). */
+  delay?: number
 }
 
 /**
  * Displays output text with semantic coloring based on message type.
  * Uses theme colors to indicate success (green), error (red), info (blue), or warning (yellow).
+ * Supports optional typing animation for string children.
  * 
  * @param children - The output text to display
  * @param type - The type of output message (default: 'normal')
@@ -103,15 +108,23 @@ interface TerminalOutputProps {
  *   - 'error': Red text
  *   - 'info': Blue text
  *   - 'warning': Yellow text
+ * @param animate - Enable typing animation (default: false)
+ * @param delay - Milliseconds per character when animating (default: 35)
  * 
  * @example
  * ```tsx
  * <TerminalOutput type="success">✓ Build completed successfully</TerminalOutput>
- * <TerminalOutput type="error">✗ Error: File not found</TerminalOutput>
- * <TerminalOutput type="info">ℹ Version 1.0.0</TerminalOutput>
+ * <TerminalOutput type="info" animate delay={20}>Connecting to server...</TerminalOutput>
  * ```
  */
-export function TerminalOutput({ children, type = 'normal' }: TerminalOutputProps) {
+export function TerminalOutput({
+  children,
+  type = 'normal',
+  animate = false,
+  delay = 35,
+}: TerminalOutputProps) {
+  const [typedText, setTypedText] = useState('')
+
   const colors = {
     normal: 'text-[var(--term-fg-dim)]',
     success: 'text-[var(--term-green)]',
@@ -120,9 +133,38 @@ export function TerminalOutput({ children, type = 'normal' }: TerminalOutputProp
     warning: 'text-[var(--term-yellow)]',
   }
 
+  const textContent = useMemo(() => {
+    if (typeof children === 'string' || typeof children === 'number') {
+      return String(children)
+    }
+    return null
+  }, [children])
+
+  useEffect(() => {
+    if (!animate || textContent === null) {
+      setTypedText(textContent ?? '')
+      return
+    }
+
+    setTypedText('')
+    let index = 0
+    const tickDelay = Math.max(10, delay)
+    const timer = window.setInterval(() => {
+      index += 1
+      setTypedText(textContent.slice(0, index))
+      if (index >= textContent.length) {
+        window.clearInterval(timer)
+      }
+    }, tickDelay)
+
+    return () => {
+      window.clearInterval(timer)
+    }
+  }, [animate, delay, textContent])
+
   return (
-    <div className={`mb-1 ${colors[type]}`}>
-      {children}
+    <div className={`mb-1 whitespace-pre-wrap ${colors[type]}`}>
+      {animate && textContent !== null ? typedText : children}
     </div>
   )
 }

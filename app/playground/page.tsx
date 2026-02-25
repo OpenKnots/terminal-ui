@@ -1,5 +1,5 @@
 import { TerminalApp } from '@/components/terminal-app'
-import { Terminal, TerminalCommand } from '@/components/terminal'
+import { Terminal, TerminalCommand, TerminalOutput } from '@/components/terminal'
 import { TerminalProgress } from '@/components/terminal-progress'
 import { PromptDemo } from './prompt-demo'
 
@@ -39,6 +39,21 @@ export default function PlaygroundPage() {
           <TerminalProgress label="Downloading..." percent={62} variant="blue" />
           <TerminalProgress label="Linking dependencies..." percent={88} variant="purple" />
           <TerminalProgress label="Done" percent={100} variant="green" />
+        </Terminal>
+      </section>
+
+      <section className="flex flex-col gap-2">
+        <h2 className="text-lg font-semibold font-mono text-[var(--term-fg)]">
+          Typing Animation
+        </h2>
+        <Terminal title="deploy-log.sh">
+          <TerminalCommand>npm run deploy</TerminalCommand>
+          <TerminalOutput type="info" animate delay={28}>
+            Building production bundle...
+          </TerminalOutput>
+          <TerminalOutput type="success" animate delay={20}>
+            Deployment complete. URL: https://example.app
+          </TerminalOutput>
         </Terminal>
       </section>
     </main>
