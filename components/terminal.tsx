@@ -1,6 +1,6 @@
 'use client'
 
-import { ReactNode } from 'react'
+import { createContext, ReactNode, useContext } from 'react'
 import { Minimize2, Maximize2, X } from 'lucide-react'
 
 interface TerminalProps {
@@ -9,6 +9,8 @@ interface TerminalProps {
   prompt?: string
   className?: string
 }
+
+const TerminalPromptContext = createContext('$')
 
 export function Terminal({ children, title = 'Terminal', prompt = '$', className = '' }: TerminalProps) {
   return (
@@ -32,7 +34,7 @@ export function Terminal({ children, title = 'Terminal', prompt = '$', className
       
       {/* Terminal Content */}
       <div className="p-4 font-mono text-sm">
-        {children}
+        <TerminalPromptContext.Provider value={prompt}>{children}</TerminalPromptContext.Provider>
       </div>
     </div>
   )
@@ -43,10 +45,12 @@ interface TerminalCommandProps {
   prompt?: string
 }
 
-export function TerminalCommand({ children, prompt = '$' }: TerminalCommandProps) {
+export function TerminalCommand({ children, prompt }: TerminalCommandProps) {
+  const inheritedPrompt = useContext(TerminalPromptContext)
+
   return (
     <div className="flex items-start gap-2 mb-1">
-      <span className="text-[var(--term-green)] select-none">{prompt}</span>
+      <span className="text-[var(--term-green)] select-none">{prompt ?? inheritedPrompt}</span>
       <span className="flex-1">{children}</span>
     </div>
   )

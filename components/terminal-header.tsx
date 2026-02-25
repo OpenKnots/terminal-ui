@@ -75,23 +75,17 @@ export function TerminalHeader({
             <Monitor size={12} className="shrink-0 opacity-50" />
             <span className="max-w-[120px] truncate">{tab.title}</span>
             {tabs.length > 1 && (
-              <span
-                role="button"
-                tabIndex={0}
+              <button
+                type="button"
                 onClick={(e) => {
                   e.stopPropagation()
                   onTabClose(tab.id)
                 }}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    e.stopPropagation()
-                    onTabClose(tab.id)
-                  }
-                }}
                 className="ml-1 rounded-sm p-0.5 text-[var(--term-fg-dim)] opacity-0 transition-opacity hover:bg-[var(--glass-bg)] hover:text-[var(--term-fg)] group-hover:opacity-100"
+                aria-label={`Close ${tab.title} tab`}
               >
                 ×
-              </span>
+              </button>
             )}
             {activeTab === tab.id && (
               <span className="absolute bottom-0 left-0 right-0 h-px bg-[var(--term-green)]" />
@@ -105,6 +99,7 @@ export function TerminalHeader({
             <button
               onClick={onNewTab}
               className="flex h-10 items-center px-2.5 text-[var(--term-fg-dim)] transition-colors hover:text-[var(--term-fg)]"
+              aria-label="New tab"
             >
               <Plus size={14} />
             </button>
@@ -119,7 +114,10 @@ export function TerminalHeader({
       <div className="flex items-center gap-1 px-2">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="flex items-center gap-1 rounded-md px-2 py-1 text-xs text-[var(--term-fg-dim)] transition-colors hover:bg-[var(--glass-bg)] hover:text-[var(--term-fg)]">
+            <button
+              className="flex items-center gap-1 rounded-md px-2 py-1 text-xs text-[var(--term-fg-dim)] transition-colors hover:bg-[var(--glass-bg)] hover:text-[var(--term-fg)]"
+              aria-label="Open theme and layout menu"
+            >
               <Palette size={13} />
               <ChevronDown size={10} />
             </button>

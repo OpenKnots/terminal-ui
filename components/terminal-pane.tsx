@@ -53,6 +53,7 @@ interface TerminalPaneProps {
   tabCount?: number
   isFocused?: boolean
   onFocus?: () => void
+  clearSignal?: number
 }
 
 export function TerminalPane({
@@ -62,6 +63,7 @@ export function TerminalPane({
   tabCount = 1,
   isFocused = true,
   onFocus,
+  clearSignal = 0,
 }: TerminalPaneProps) {
   const { theme, setTheme } = useTheme()
   const [lines, setLines] = useState<Line[]>(() => [
@@ -89,6 +91,13 @@ export function TerminalPane({
   useEffect(() => {
     if (isFocused) inputRef.current?.focus()
   }, [isFocused])
+
+  useEffect(() => {
+    if (clearSignal > 0) {
+      setLines([])
+      setInput('')
+    }
+  }, [clearSignal])
 
   const push = useCallback(
     (newLines: Line[]) => setLines((prev) => [...prev, ...newLines]),

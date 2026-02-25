@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   ResizablePanelGroup,
   ResizablePanel,
@@ -43,7 +43,10 @@ function TerminalAppInner({ className }: { className?: string }) {
   })
   const [activeTabId, setActiveTabId] = useState(() => tabs[0].id)
   const [focusedPane, setFocusedPane] = useState<string>('')
-  const clearFnRef = useRef<(() => void) | null>(null)
+  const [clearRequest, setClearRequest] = useState<{ paneId: string; nonce: number }>({
+    paneId: '',
+    nonce: 0,
+  })
 
   const activeTab = tabs.find((t) => t.id === activeTabId) ?? tabs[0]
 
@@ -159,6 +162,7 @@ function TerminalAppInner({ className }: { className?: string }) {
               onClosePane={() => closePane(paneId)}
               tabCount={tabs.length}
               setTheme={setTheme}
+              clearSignal={clearRequest.paneId === paneId ? clearRequest.nonce : 0}
             />
           ))}
         </ResizablePanelGroup>
@@ -172,7 +176,10 @@ function TerminalAppInner({ className }: { className?: string }) {
       <CommandPalette
         onNewTab={addTab}
         onSplit={splitPane}
-        onClear={() => clearFnRef.current?.()}
+        onClear={() => {
+          if (!focusedPane) return
+          setClearRequest({ paneId: focusedPane, nonce: Date.now() })
+        }}
       />
     </div>
   )
@@ -189,6 +196,7 @@ function PaneWithContext({
   onClosePane,
   tabCount,
   setTheme,
+  clearSignal,
 }: {
   paneId: string
   index: number
@@ -200,6 +208,7 @@ function PaneWithContext({
   onClosePane: () => void
   tabCount: number
   setTheme: (id: ThemeId) => void
+  clearSignal: number
 }) {
   return (
     <>
@@ -214,6 +223,7 @@ function PaneWithContext({
               tabCount={tabCount}
               isFocused={isFocused}
               onFocus={onFocus}
+              clearSignal={clearSignal}
             />
           </ContextMenuTrigger>
           <ContextMenuContent className="w-52 bg-[var(--term-bg-panel)] border-[var(--glass-border)]">
