@@ -17,7 +17,7 @@ import {
   ContextMenuSubContent,
 } from '@/components/ui/context-menu'
 import { TooltipProvider } from '@/components/ui/tooltip'
-import { ThemeProvider, THEMES, useTheme } from '@/components/terminal-themes'
+import { ThemeProvider, THEMES, useTheme, type ThemeId } from '@/components/terminal-themes'
 import { TerminalHeader } from '@/components/terminal-header'
 import { TerminalStatusBar } from '@/components/terminal-status-bar'
 import { TerminalPane } from '@/components/terminal-pane'
@@ -145,7 +145,7 @@ function TerminalAppInner({ className }: { className?: string }) {
       />
 
       <div className="flex-1 min-h-0">
-        <ResizablePanelGroup direction="horizontal" className="h-full">
+        <ResizablePanelGroup className="h-full">
           {activeTab.panes.map((paneId, i) => (
             <PaneWithContext
               key={paneId}
@@ -199,7 +199,7 @@ function PaneWithContext({
   onNewTab: () => void
   onClosePane: () => void
   tabCount: number
-  setTheme: (id: string) => void
+  setTheme: (id: ThemeId) => void
 }) {
   return (
     <>
