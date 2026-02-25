@@ -1,5 +1,5 @@
 import { TerminalApp } from '@/components/terminal-app'
-import { Terminal, TerminalCommand, TerminalOutput } from '@/components/terminal'
+import { Terminal, TerminalCommand, TerminalOutput, TerminalSpinner } from '@/components/terminal'
 import { TerminalProgress } from '@/components/terminal-progress'
 import { LogDemo } from './log-demo'
 import { PromptDemo } from './prompt-demo'
@@ -40,6 +40,16 @@ export default function PlaygroundPage() {
           <TerminalProgress label="Downloading..." percent={62} variant="blue" />
           <TerminalProgress label="Linking dependencies..." percent={88} variant="purple" />
           <TerminalProgress label="Done" percent={100} variant="green" />
+        </Terminal>
+      </section>
+
+      <section className="flex flex-col gap-2">
+        <h2 className="text-lg font-semibold font-mono text-[var(--term-fg)]">
+          TerminalSpinner
+        </h2>
+        <Terminal title="spinner-demo.sh">
+          <TerminalCommand>pnpm run build</TerminalCommand>
+          <TerminalSpinner text="Compiling components..." />
         </Terminal>
       </section>
 

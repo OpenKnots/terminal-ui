@@ -16,6 +16,14 @@ import { ReactNode } from 'react'
  * @param showPercent - Whether to show percentage text (default: true)
  * @param variant - Color variant for the filled portion (default: 'green')
  *
+ * @param percent - Progress percentage (0-100), values are clamped.
+ * @param label - Optional label shown before the bar.
+ * @param width - Character width of the bar.
+ * @param filled - Character used for completed progress.
+ * @param empty - Character used for remaining progress.
+ * @param showPercent - Toggle percentage text visibility.
+ * @param variant - Color variant for the completed section.
+ *
  * @example
  * ```tsx
  * <TerminalProgress percent={75} label="Installing..." />
@@ -68,7 +76,6 @@ export function TerminalProgress({
   const clamped = Math.max(0, Math.min(100, percent))
   const filledCount = Math.round((clamped / 100) * safeWidth)
   const emptyCount = safeWidth - filledCount
-
   const color = variantColors[variant] ?? variantColors.green
 
   return (
