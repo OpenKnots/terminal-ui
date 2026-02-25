@@ -8,6 +8,7 @@ export { TerminalProgress, type TerminalProgressProps } from './terminal-progres
 export { TerminalTable, type TerminalTableColumn, type TerminalTableRow, type TerminalTableProps } from './terminal-table'
 export { TerminalPrompt, type TerminalPromptProps } from './terminal-prompt'
 export { TerminalTree, type TreeNode, type TerminalTreeProps } from './terminal-tree'
+export { TerminalAutocomplete, useAutocomplete, COMMON_COMMANDS, COMMON_FLAGS, filterSuggestions, type TerminalAutocompleteProps, type AutocompleteSuggestion } from './terminal-autocomplete'
 
 interface TerminalProps {
   children: ReactNode
