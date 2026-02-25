@@ -197,7 +197,6 @@ Describe:
 
 - 💬 [Open a discussion](https://github.com/OpenKnots/terminal-ui/discussions)
 - 🐦 Tweet [@OpenKnots](https://twitter.com/OpenKnots)
-- 📧 Email: hello@openknots.com
 
 ## 🎉 Recognition
 
