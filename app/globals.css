@@ -239,6 +239,29 @@ body {
   touch-action: pan-y;
 }
 
+.terminal-code .token.comment,
+.terminal-code .token.prolog {
+  color: var(--term-fg-dim);
+}
+
+.terminal-code .token.property,
+.terminal-code .token.punctuation {
+  color: var(--term-cyan);
+}
+
+.terminal-code .token.string {
+  color: var(--term-green);
+}
+
+.terminal-code .token.number,
+.terminal-code .token.boolean {
+  color: var(--term-yellow);
+}
+
+.terminal-code .token.keyword {
+  color: var(--term-purple);
+}
+
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;

@@ -25,7 +25,7 @@ export default function PlaygroundPage() {
           TerminalPrompt
         </h2>
         <p className="text-sm text-[var(--term-fg-dim)] font-mono">
-          Interactive command input with history navigation (↑ / ↓).
+          Interactive command input with history navigation (up / down).
         </p>
         <PromptDemo />
       </section>
@@ -92,6 +92,25 @@ export default function PlaygroundPage() {
             after={'PORT=3000\nLOG_LEVEL=debug\nFEATURE_FLAG=true'}
             mode="split"
           />
+        </Terminal>
+      </section>
+
+      <section className="flex flex-col gap-2">
+        <h2 className="text-lg font-semibold font-mono text-[var(--term-fg)]">
+          Syntax Highlighting
+        </h2>
+        <Terminal title="package-info.json">
+          <TerminalCommand>cat package.json | jq '.name, .version, .scripts'</TerminalCommand>
+          <TerminalOutput language="json">
+            {`{
+  "name": "@openknots/terminal-ui",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build"
+  }
+}`}
+          </TerminalOutput>
         </Terminal>
       </section>
 

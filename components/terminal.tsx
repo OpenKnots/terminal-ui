@@ -2,6 +2,9 @@
 
 import { createContext, ReactNode, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { Check, Copy, Minimize2, Maximize2, X } from 'lucide-react'
+import Prism from 'prismjs'
+import 'prismjs/components/prism-json'
+import 'prismjs/components/prism-typescript'
 
 interface TerminalProps {
   children: ReactNode
@@ -123,27 +126,25 @@ interface TerminalOutputProps {
   animate?: boolean
   /** Milliseconds between each character when animating (default: 35, min: 10). */
   delay?: number
+  /** Language for Prism.js syntax highlighting (e.g. 'json', 'typescript'). */
+  language?: string
 }
 
 /**
  * Displays output text with semantic coloring based on message type.
  * Uses theme colors to indicate success (green), error (red), info (blue), or warning (yellow).
- * Supports optional typing animation for string children.
+ * Supports optional typing animation for string children and Prism.js syntax highlighting.
  * 
  * @param children - The output text to display
  * @param type - The type of output message (default: 'normal')
- *   - 'normal': Dim gray text
- *   - 'success': Green text
- *   - 'error': Red text
- *   - 'info': Blue text
- *   - 'warning': Yellow text
  * @param animate - Enable typing animation (default: false)
  * @param delay - Milliseconds per character when animating (default: 35)
+ * @param language - Language for syntax highlighting (e.g. 'json', 'typescript')
  * 
  * @example
  * ```tsx
- * <TerminalOutput type="success">✓ Build completed successfully</TerminalOutput>
- * <TerminalOutput type="info" animate delay={20}>Connecting to server...</TerminalOutput>
+ * <TerminalOutput type="success">Build completed successfully</TerminalOutput>
+ * <TerminalOutput language="json">{"key": "value"}</TerminalOutput>
  * ```
  */
 export function TerminalOutput({
@@ -151,6 +152,7 @@ export function TerminalOutput({
   type = 'normal',
   animate = false,
   delay = 35,
+  language,
 }: TerminalOutputProps) {
   const [typedText, setTypedText] = useState('')
 
@@ -168,6 +170,16 @@ export function TerminalOutput({
     }
     return null
   }, [children])
+
+  const highlightedHtml = useMemo(() => {
+    if (!language || textContent === null) return null
+
+    const normalizedLanguage = language.toLowerCase()
+    const grammar = Prism.languages[normalizedLanguage]
+    if (!grammar) return null
+
+    return Prism.highlight(textContent, grammar, normalizedLanguage)
+  }, [language, textContent])
 
   useEffect(() => {
     if (!animate || textContent === null) {
@@ -193,7 +205,9 @@ export function TerminalOutput({
 
   return (
     <div className={`mb-1 whitespace-pre-wrap ${colors[type]}`}>
-      {animate && textContent !== null ? typedText : children}
+      {highlightedHtml ? (
+        <code className="terminal-code" dangerouslySetInnerHTML={{ __html: highlightedHtml }} />
+      ) : animate && textContent !== null ? typedText : children}
     </div>
   )
 }
