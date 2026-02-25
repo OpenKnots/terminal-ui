@@ -1,0 +1,39 @@
+---
+description: Use proxy.ts instead of middleware.ts for request/response handling in Next.js projects
+alwaysApply: true
+---
+
+# Next.js: Use proxy.ts, Never middleware.ts
+
+Never create or use `middleware.ts` in Next.js projects. Use `proxy.ts` at the project root instead.
+
+## Convention
+
+- `proxy.ts` is the single source of truth for security headers, rewrites, redirects, and request-level configuration.
+- Export typed config functions from `proxy.ts` and import them in `next.config.ts`.
+
+## Example
+
+```typescript
+// proxy.ts
+import type { NextConfig } from 'next'
+
+const securityHeaders = [
+  { key: 'X-Content-Type-Options', value: 'nosniff' },
+  { key: 'X-Frame-Options', value: 'DENY' },
+  { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+]
+
+export const proxyHeaders: NextConfig['headers'] = async () => [
+  { source: '/(.*)', headers: securityHeaders },
+]
+```
+
+```typescript
+// next.config.ts
+import { proxyHeaders } from './proxy'
+
+const nextConfig: NextConfig = {
+  headers: proxyHeaders,
+}
+```
