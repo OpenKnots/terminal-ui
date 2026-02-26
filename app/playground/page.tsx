@@ -3,6 +3,7 @@ import { Terminal, TerminalCommand, TerminalOutput } from '@/components/terminal
 import { TerminalProgress } from '@/components/terminal-progress'
 import { LogDemo } from './log-demo'
 import { PromptDemo } from './prompt-demo'
+import { TreeKeyboardDemo } from './tree-keyboard-demo'
 
 export const metadata = {
   title: 'Playground',
@@ -45,12 +46,18 @@ export default function PlaygroundPage() {
 
       <section className="flex flex-col gap-2">
         <h2 className="text-lg font-semibold font-mono text-[var(--term-fg)]">
+<<<<<<< HEAD
           TerminalLog
         </h2>
         <p className="text-sm text-[var(--term-fg-dim)] font-mono">
           Simulated streaming logs with capped history and auto-scroll.
         </p>
         <LogDemo />
+=======
+          TerminalTree Keyboard Navigation
+        </h2>
+        <TreeKeyboardDemo />
+>>>>>>> 38d5829 (feat: add keyboard navigation to TerminalTree)
       </section>
 
       <section className="flex flex-col gap-2">
