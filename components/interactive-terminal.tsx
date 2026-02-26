@@ -5,6 +5,8 @@ import { Terminal, TerminalCommand, TerminalOutput } from '@/components/terminal
 import { TerminalProgress } from '@/components/terminal-progress'
 import { TerminalTable } from '@/components/terminal-table'
 import { TerminalBarChart, TerminalSparkline } from '@/components/terminal-chart'
+import { TerminalSelect } from '@/components/terminal-select'
+import { TerminalAlert } from '@/components/terminal-alert'
 
 type OutputType = 'normal' | 'success' | 'error' | 'info' | 'warning'
 
@@ -47,6 +49,19 @@ type Line =
       data: number[]
       label?: string
       variant: 'green' | 'blue' | 'yellow' | 'red' | 'purple' | 'cyan'
+    }
+  | {
+      id: number
+      kind: 'select'
+      label: string
+      options: string[]
+    }
+  | {
+      id: number
+      kind: 'alert'
+      variant: 'info' | 'success' | 'warning' | 'error'
+      title?: string
+      text: string
     }
 
 const PROMPT = 'guest@openknots'
@@ -99,6 +114,8 @@ export function InteractiveTerminal() {
             { id: nextId(), kind: 'output', type: 'normal', text: 'progress  show progress bars demo' },
             { id: nextId(), kind: 'output', type: 'normal', text: 'table     show table demo' },
             { id: nextId(), kind: 'output', type: 'normal', text: 'chart     show chart demos' },
+            { id: nextId(), kind: 'output', type: 'normal', text: 'select    show select demo' },
+            { id: nextId(), kind: 'output', type: 'normal', text: 'alert     show alert demos' },
             { id: nextId(), kind: 'output', type: 'normal', text: 'date      show current date/time' },
             { id: nextId(), kind: 'output', type: 'normal', text: 'clear     clear terminal output' },
           )
@@ -175,6 +192,25 @@ export function InteractiveTerminal() {
               data: [80, 82, 85, 83, 87, 90, 88, 92, 91, 89, 93, 95],
               variant: 'yellow',
             },
+          )
+          break
+        case 'select':
+          next.push(
+            { id: nextId(), kind: 'output', type: 'info', text: 'TerminalSelect demo (click to focus, then use ↑↓):' },
+            {
+              id: nextId(),
+              kind: 'select',
+              label: 'Choose a package manager:',
+              options: ['npm', 'yarn', 'pnpm', 'bun'],
+            },
+          )
+          break
+        case 'alert':
+          next.push(
+            { id: nextId(), kind: 'alert', variant: 'info', title: 'Update Available', text: 'A new version of terminal-ui is available (v0.2.0).' },
+            { id: nextId(), kind: 'alert', variant: 'success', title: 'Build Passed', text: 'All 42 tests passed in 1.3s.' },
+            { id: nextId(), kind: 'alert', variant: 'warning', title: 'Deprecation', text: 'TerminalPane will be removed in v1.0. Use Terminal instead.' },
+            { id: nextId(), kind: 'alert', variant: 'error', title: 'Fatal Error', text: 'Cannot read properties of undefined (reading "map").' },
           )
           break
         case 'date':
@@ -257,6 +293,26 @@ export function InteractiveTerminal() {
                 label={line.label}
                 variant={line.variant}
               />
+            )
+          }
+          if (line.kind === 'select') {
+            return (
+              <TerminalSelect
+                key={line.id}
+                label={line.label}
+                options={line.options}
+              />
+            )
+          }
+          if (line.kind === 'alert') {
+            return (
+              <TerminalAlert
+                key={line.id}
+                variant={line.variant}
+                title={line.title}
+              >
+                {line.text}
+              </TerminalAlert>
             )
           }
           return (
