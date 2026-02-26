@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useRef, useState } from 'react'
 import { Terminal, TerminalCommand, TerminalOutput } from '@/components/terminal'
 import { TerminalProgress } from '@/components/terminal-progress'
 import { TerminalTable } from '@/components/terminal-table'
+import { TerminalBarChart, TerminalSparkline } from '@/components/terminal-chart'
 
 type OutputType = 'normal' | 'success' | 'error' | 'info' | 'warning'
 
@@ -31,6 +32,21 @@ type Line =
       kind: 'table'
       headers: string[]
       rows: string[][]
+    }
+  | {
+      id: number
+      kind: 'barchart'
+      data: { label: string; value: number }[]
+      title?: string
+      unit?: string
+      variant: 'green' | 'blue' | 'yellow' | 'red' | 'purple' | 'cyan'
+    }
+  | {
+      id: number
+      kind: 'sparkline'
+      data: number[]
+      label?: string
+      variant: 'green' | 'blue' | 'yellow' | 'red' | 'purple' | 'cyan'
     }
 
 const PROMPT = 'guest@openknots'
@@ -82,6 +98,7 @@ export function InteractiveTerminal() {
             { id: nextId(), kind: 'output', type: 'normal', text: 'echo      print text' },
             { id: nextId(), kind: 'output', type: 'normal', text: 'progress  show progress bars demo' },
             { id: nextId(), kind: 'output', type: 'normal', text: 'table     show table demo' },
+            { id: nextId(), kind: 'output', type: 'normal', text: 'chart     show chart demos' },
             { id: nextId(), kind: 'output', type: 'normal', text: 'date      show current date/time' },
             { id: nextId(), kind: 'output', type: 'normal', text: 'clear     clear terminal output' },
           )
@@ -124,6 +141,39 @@ export function InteractiveTerminal() {
                 ['typescript', '5.7.0', '38 kB'],
                 ['tailwindcss', '4.2.1', '210 kB'],
               ],
+            },
+          )
+          break
+        case 'chart':
+          next.push(
+            { id: nextId(), kind: 'output', type: 'info', text: 'TerminalBarChart demo:' },
+            {
+              id: nextId(),
+              kind: 'barchart',
+              title: 'Bundle Size (kB)',
+              unit: ' kB',
+              variant: 'cyan',
+              data: [
+                { label: 'react', value: 142 },
+                { label: 'next', value: 540 },
+                { label: 'typescript', value: 38 },
+                { label: 'tailwindcss', value: 210 },
+              ],
+            },
+            { id: nextId(), kind: 'output', type: 'info', text: 'TerminalSparkline demo:' },
+            {
+              id: nextId(),
+              kind: 'sparkline',
+              label: 'CPU',
+              data: [12, 45, 23, 67, 34, 89, 56, 78, 43, 91, 65, 38],
+              variant: 'green',
+            },
+            {
+              id: nextId(),
+              kind: 'sparkline',
+              label: 'Mem',
+              data: [80, 82, 85, 83, 87, 90, 88, 92, 91, 89, 93, 95],
+              variant: 'yellow',
             },
           )
           break
@@ -185,6 +235,27 @@ export function InteractiveTerminal() {
                 key={line.id}
                 headers={line.headers}
                 rows={line.rows}
+              />
+            )
+          }
+          if (line.kind === 'barchart') {
+            return (
+              <TerminalBarChart
+                key={line.id}
+                data={line.data}
+                title={line.title}
+                unit={line.unit}
+                variant={line.variant}
+              />
+            )
+          }
+          if (line.kind === 'sparkline') {
+            return (
+              <TerminalSparkline
+                key={line.id}
+                data={line.data}
+                label={line.label}
+                variant={line.variant}
               />
             )
           }
