@@ -1,5 +1,5 @@
 import { TerminalApp } from '@/components/terminal-app'
-import { Terminal, TerminalCommand, TerminalOutput } from '@/components/terminal'
+import { Terminal, TerminalCommand, TerminalOutput, ThemeSwitcher } from '@/components/terminal'
 import { TerminalProgress } from '@/components/terminal-progress'
 import { PromptDemo } from './prompt-demo'
 
@@ -10,6 +10,13 @@ export const metadata = {
 export default function PlaygroundPage() {
   return (
     <main className="flex flex-col gap-8 p-6 min-h-screen">
+      <section className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-xl font-semibold font-mono text-[var(--term-fg)]">
+          Playground
+        </h1>
+        <ThemeSwitcher />
+      </section>
+
       <section className="flex flex-col gap-2">
         <h2 className="text-lg font-semibold font-mono text-[var(--term-fg)]">
           Terminal App
