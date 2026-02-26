@@ -31,7 +31,7 @@ const TerminalPromptContext = createContext('$')
  */
 export function Terminal({ children, title = 'Terminal', prompt = '$', className = '' }: TerminalProps) {
   return (
-    <div className={`bg-[var(--term-bg-light)] border border-[var(--glass-border)] rounded-lg overflow-hidden ${className}`}>
+    <div className={`flex flex-col bg-[var(--term-bg-light)] border border-[var(--glass-border)] rounded-lg overflow-hidden ${className}`}>
       {/* Window Chrome */}
       <div className="flex items-center justify-between px-4 py-2.5 border-b border-[var(--glass-border)] bg-[rgba(0,0,0,0.2)]">
         <div className="flex items-center gap-2">
@@ -50,7 +50,7 @@ export function Terminal({ children, title = 'Terminal', prompt = '$', className
       </div>
       
       {/* Terminal Content */}
-      <div className="p-4 font-mono text-sm">
+      <div className="terminal-scroll min-h-0 flex-1 overflow-auto p-4 font-mono text-sm">
         <TerminalPromptContext.Provider value={prompt}>{children}</TerminalPromptContext.Provider>
       </div>
     </div>

@@ -215,6 +215,12 @@ body {
   vertical-align: text-bottom;
 }
 
+.terminal-scroll {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+}
+
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
