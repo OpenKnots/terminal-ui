@@ -1,6 +1,7 @@
 import { TerminalApp } from '@/components/terminal-app'
 import { Terminal, TerminalCommand, TerminalOutput } from '@/components/terminal'
 import { TerminalProgress } from '@/components/terminal-progress'
+import { LogDemo } from './log-demo'
 import { PromptDemo } from './prompt-demo'
 
 export const metadata = {
@@ -40,6 +41,16 @@ export default function PlaygroundPage() {
           <TerminalProgress label="Linking dependencies..." percent={88} variant="purple" />
           <TerminalProgress label="Done" percent={100} variant="green" />
         </Terminal>
+      </section>
+
+      <section className="flex flex-col gap-2">
+        <h2 className="text-lg font-semibold font-mono text-[var(--term-fg)]">
+          TerminalLog
+        </h2>
+        <p className="text-sm text-[var(--term-fg-dim)] font-mono">
+          Simulated streaming logs with capped history and auto-scroll.
+        </p>
+        <LogDemo />
       </section>
 
       <section className="flex flex-col gap-2">
