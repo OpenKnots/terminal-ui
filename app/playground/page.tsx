@@ -1,5 +1,5 @@
 import { TerminalApp } from '@/components/terminal-app'
-import { Terminal, TerminalCommand, TerminalOutput, TerminalSpinner } from '@/components/terminal'
+import { Terminal, TerminalCommand, TerminalDiff, TerminalOutput, TerminalSpinner } from '@/components/terminal'
 import { TerminalProgress } from '@/components/terminal-progress'
 import { LogDemo } from './log-demo'
 import { PromptDemo } from './prompt-demo'
@@ -71,6 +71,27 @@ export default function PlaygroundPage() {
           <TerminalCommand>pnpm run build</TerminalCommand>
           <TerminalOutput type="success">Compiled successfully in 1.2s</TerminalOutput>
           <TerminalOutput type="info">Click the copy icon in the header to copy this output.</TerminalOutput>
+        </Terminal>
+      </section>
+
+      <section className="flex flex-col gap-2">
+        <h2 className="text-lg font-semibold font-mono text-[var(--term-fg)]">
+          TerminalDiff
+        </h2>
+        <Terminal title="diff-demo.sh">
+          <TerminalCommand>git diff -- src/config.ts</TerminalCommand>
+          <TerminalOutput type="info">Unified</TerminalOutput>
+          <TerminalDiff
+            before={'const retries = 2\nconst timeoutMs = 1500\nconst env = "staging"'}
+            after={'const retries = 3\nconst timeoutMs = 2000\nconst env = "production"'}
+            mode="unified"
+          />
+          <TerminalOutput type="info">Split</TerminalOutput>
+          <TerminalDiff
+            before={'PORT=3000\nLOG_LEVEL=info\nFEATURE_FLAG=false'}
+            after={'PORT=3000\nLOG_LEVEL=debug\nFEATURE_FLAG=true'}
+            mode="split"
+          />
         </Terminal>
       </section>
 
