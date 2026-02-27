@@ -2,6 +2,7 @@
 
 > Beautiful terminal-like UI components for the web. Build CLI experiences in React.
 
+[![CI](https://github.com/OpenKnots/terminal-ui/actions/workflows/ci.yml/badge.svg)](https://github.com/OpenKnots/terminal-ui/actions/workflows/ci.yml)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![AI Agent Friendly](https://img.shields.io/badge/AI%20agents-welcome-purple.svg)](AGENTS.md)
