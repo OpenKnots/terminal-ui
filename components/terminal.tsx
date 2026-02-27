@@ -1,7 +1,7 @@
 'use client'
 
 import { createContext, ReactNode, useContext, useEffect, useMemo, useRef, useState } from 'react'
-import { Check, Copy, Minimize2, Maximize2, X } from 'lucide-react'
+import { Check, Copy } from 'lucide-react'
 import Prism from 'prismjs'
 import 'prismjs/components/prism-json'
 import 'prismjs/components/prism-typescript'
@@ -262,3 +262,4 @@ export { TerminalSplit } from './terminal-split'
 export { TerminalDiff } from './terminal-diff'
 export { TerminalAutocomplete, useAutocomplete, COMMON_COMMANDS, COMMON_FLAGS, filterSuggestions, type TerminalAutocompleteProps, type AutocompleteSuggestion } from './terminal-autocomplete'
 export { TerminalGhosttyTheme, GhosttyThemePicker } from './terminal-ghostty'
+export { TerminalBadge } from './terminal-badge'
