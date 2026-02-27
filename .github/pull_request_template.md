@@ -1,12 +1,15 @@
-## What does this PR do?
+## Summary
 
-<!-- Brief description of the changes -->
+<!-- 2-5 bullets. What changed and why? -->
 
-Closes #<!-- issue number -->
+- 
+- 
+
+## Problem / Motivation
+
+<!-- What user/developer pain does this solve? -->
 
 ## Type of Change
-
-<!-- Check all that apply -->
 
 - [ ] 🎨 New theme
 - [ ] 📦 New component
@@ -14,26 +17,41 @@ Closes #<!-- issue number -->
 - [ ] 📚 Documentation
 - [ ] ✨ Enhancement
 - [ ] 🔧 Refactor
+- [ ] 🧪 Test/CI
 
-## Screenshots
+## Screenshots / Demo (if UI change)
 
-<!-- If UI changes, add before/after screenshots -->
+**Before**
 
-**Before:**
-<!-- screenshot or "N/A" -->
+<!-- image / gif / N/A -->
 
-**After:**
-<!-- screenshot -->
+**After**
+
+<!-- image / gif / N/A -->
+
+## Testing
+
+<!-- Paste exact commands run and outcomes -->
+
+```bash
+pnpm build
+```
+
+- [ ] I ran the checks locally
+- [ ] No new console warnings/errors
 
 ## Checklist
 
-- [ ] Code follows the existing style
-- [ ] Component is documented (JSDoc comments)
-- [ ] Example added to playground (if applicable)
-- [ ] Build passes (`pnpm run build`)
-- [ ] No console errors or warnings
-- [ ] Tested locally
+- [ ] Code follows existing patterns/style
+- [ ] Added or updated docs where needed
+- [ ] Added playground example (if applicable)
+- [ ] Build passes locally
+- [ ] PR title follows Conventional Commits (e.g., `feat: ...`, `fix: ...`)
 
-## Additional Notes
+## Linked Issues
 
-<!-- Any other context, implementation details, or questions -->
+Closes #<!-- issue number -->
+
+## Notes for Reviewers
+
+<!-- Any tradeoffs, follow-ups, or areas to focus review -->
