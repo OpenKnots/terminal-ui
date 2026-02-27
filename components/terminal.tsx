@@ -1,7 +1,7 @@
 'use client'
 
 import { createContext, ReactNode, useContext, useEffect, useMemo, useRef, useState } from 'react'
-import { Check, Copy, Minimize2, Maximize2, X } from 'lucide-react'
+import { Check, Copy } from 'lucide-react'
 
 interface TerminalProps {
   children: ReactNode
@@ -202,22 +202,33 @@ interface TerminalSpinnerProps {
   text?: string
 }
 
+const SPINNER_FRAMES = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'] as const
+
 /**
  * Displays an animated spinner with optional text for loading states.
- * Uses Unicode braille characters for smooth animation.
+ * Cycles through Unicode braille characters for smooth terminal-style animation.
  * 
  * @param text - Optional text to display next to the spinner
  * 
  * @example
  * ```tsx
  * <TerminalSpinner text="Installing dependencies..." />
- * // Renders: ⠋ Installing dependencies...
+ * // Renders: ⠋ Installing dependencies... (animated)
  * ```
  */
 export function TerminalSpinner({ text }: TerminalSpinnerProps) {
+  const [frameIndex, setFrameIndex] = useState(0)
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setFrameIndex((prev) => (prev + 1) % SPINNER_FRAMES.length)
+    }, 80)
+    return () => window.clearInterval(timer)
+  }, [])
+
   return (
     <div className="flex items-center gap-2 text-[var(--term-blue)]">
-      <span className="animate-spin">⠋</span>
+      <span aria-hidden>{SPINNER_FRAMES[frameIndex]}</span>
       {text && <span>{text}</span>}
     </div>
   )
@@ -234,3 +245,4 @@ export { TerminalAlert } from './terminal-alert'
 export { TerminalTabs } from './terminal-tabs'
 export { TerminalSplit } from './terminal-split'
 export { TerminalDiff } from './terminal-diff'
+export { TerminalBadge } from './terminal-badge'

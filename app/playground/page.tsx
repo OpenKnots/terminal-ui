@@ -1,5 +1,5 @@
 import { TerminalApp } from '@/components/terminal-app'
-import { Terminal, TerminalCommand, TerminalDiff, TerminalOutput, TerminalSpinner } from '@/components/terminal'
+import { Terminal, TerminalBadge, TerminalCommand, TerminalDiff, TerminalOutput, TerminalSpinner } from '@/components/terminal'
 import { TerminalProgress } from '@/components/terminal-progress'
 import { LogDemo } from './log-demo'
 import { PromptDemo } from './prompt-demo'
@@ -92,6 +92,23 @@ export default function PlaygroundPage() {
             after={'PORT=3000\nLOG_LEVEL=debug\nFEATURE_FLAG=true'}
             mode="split"
           />
+        </Terminal>
+      </section>
+
+      <section className="flex flex-col gap-2">
+        <h2 className="text-lg font-semibold font-mono text-[var(--term-fg)]">
+          TerminalBadge
+        </h2>
+        <Terminal title="badge-demo.sh">
+          <TerminalCommand>pnpm run release</TerminalCommand>
+          <TerminalOutput type="info">
+            <span className="flex flex-wrap items-center gap-2">
+              <TerminalBadge variant="info">staging</TerminalBadge>
+              <TerminalBadge variant="success">v1.2.0</TerminalBadge>
+              <TerminalBadge variant="warning">WARN 2</TerminalBadge>
+              <TerminalBadge variant="error">EXIT 1</TerminalBadge>
+            </span>
+          </TerminalOutput>
         </Terminal>
       </section>
 
