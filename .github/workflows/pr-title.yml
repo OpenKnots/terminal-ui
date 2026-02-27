@@ -1,0 +1,26 @@
+name: PR Title Lint
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  pull-requests: read
+
+jobs:
+  validate-title:
+    name: Validate Conventional Commit PR title
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check title format
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          echo "PR title: $PR_TITLE"
+          if [[ ! "$PR_TITLE" =~ ^(feat|fix|docs|style|refactor|test|chore|ci)(\([a-z0-9\-]+\))?:\ .+ ]]; then
+            echo "❌ PR title must follow Conventional Commits."
+            echo "Expected: type(scope): summary or type: summary"
+            echo "Example: feat(tree): add keyboard navigation"
+            exit 1
+          fi
+          echo "✅ PR title format looks good"
