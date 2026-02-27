@@ -61,6 +61,21 @@ export default function App() {
 - **TerminalTree** - File tree views → [Issue #9](../../issues/9)
 - **TerminalPrompt** - Interactive input → [Issue #12](../../issues/12)
 
+## 📊 Component Status Matrix
+
+| Component | Status | Keyboard Support | Notes |
+|---|---|---|---|
+| `Terminal` | ✅ Stable | ✅ | Core window chrome + content container |
+| `TerminalCommand` | ✅ Stable | ✅ | Prompt + command line rendering |
+| `TerminalOutput` | ✅ Stable | ✅ | Semantic output colors + optional animation |
+| `TerminalSpinner` | ✅ Stable | ✅ | Braille spinner for async/loading states |
+| `TerminalTree` | 🧪 Beta | ✅ | Keyboard navigation recently added |
+| `TerminalPrompt` | 🧪 Beta | ✅ | Interactive prompt patterns |
+| `TerminalProgress` | 🧪 Beta | ✅ | Progress indicators |
+| `TerminalTable` | 🧪 Beta | ✅ | Terminal-style tabular data |
+
+> Legend: ✅ Stable = production-ready baseline, 🧪 Beta = usable with active iteration.
+
 ## 🎮 Live Demo
 
 [**→ View the Playground**](https://terminal-ui.vercel.app)
