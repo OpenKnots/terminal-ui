@@ -150,6 +150,7 @@ We **love** contributions! This repo is designed for practice PRs.
 **For Humans:**
 - 📖 [CONTRIBUTING.md](CONTRIBUTING.md) - Contribution guidelines
 - 💡 [GOOD_FIRST_ISSUES.md](GOOD_FIRST_ISSUES.md) - Ideas for PRs
+- 🛡️ [.github/BRANCH_PROTECTION.md](.github/BRANCH_PROTECTION.md) - Recommended merge safeguards
 
 **For AI Agents:**
 - 🤖 [AGENTS.md](AGENTS.md) - Complete agent guide (start here!)
