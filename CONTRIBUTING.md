@@ -88,6 +88,27 @@ pnpm run format
 pnpm run lint
 ```
 
+### PR Quality Expectations
+
+Before opening a PR, make sure your description is reviewer-friendly:
+
+- **Lead with impact**: what user/developer problem did you solve?
+- **List concrete changes**: 2-5 bullets is usually perfect
+- **Include validation commands**: paste exactly what you ran
+- **Add screenshots for UI changes**: before/after if possible
+- **Call out follow-ups**: mention intentionally deferred work
+
+Recommended structure:
+
+```markdown
+## Summary
+## Problem / Motivation
+## Changes
+## Validation
+## Screenshots (if UI)
+## Follow-ups
+```
+
 ### 6. Commit
 
 ```bash
