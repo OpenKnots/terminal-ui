@@ -136,6 +136,24 @@ Agents that follow AGENTS.md consistently produce **production-ready PRs** that 
 
 **Result:** High-quality automated contributions! 🎉
 
+## 🚀 Releases
+
+This repo uses **Changesets** for versioning and release PR automation.
+
+### Maintainer setup (one-time)
+
+1. Add `NPM_TOKEN` in GitHub repository secrets
+2. Merge PRs with Changeset files
+3. On `main`, the release workflow will create/update a release PR
+
+### Contributor flow
+
+```bash
+pnpm changeset
+```
+
+Create a changeset when your PR affects package behavior/API.
+
 ## 🤝 Contributing
 
 We **love** contributions! This repo is designed for practice PRs.
