@@ -61,6 +61,27 @@ export default function App() {
 - **TerminalTree** - File tree views → [Issue #9](../../issues/9)
 - **TerminalPrompt** - Interactive input → [Issue #12](../../issues/12)
 
+## 📊 Component Status Matrix
+
+| Component | Status | Keyboard Support | Notes |
+|---|---|---|---|
+| `Terminal` | ✅ Stable | ✅ | Core window chrome + content container |
+| `TerminalCommand` | ✅ Stable | ✅ | Prompt + command line rendering |
+| `TerminalOutput` | ✅ Stable | ✅ | Semantic output colors + optional animation |
+| `TerminalSpinner` | ✅ Stable | ✅ | Braille frame animation for loading states |
+| `TerminalTree` | ✅ Stable | ✅ | Expandable tree with render-props + keyboard nav |
+| `TerminalBadge` | ✅ Stable | — | Inline status badges with variant colors |
+| `TerminalDiff` | ✅ Stable | ✅ | Unified and split diff views |
+| `TerminalLog` | 🧪 Beta | ✅ | Streaming log viewer with capped history |
+| `TerminalTable` | 🧪 Beta | ✅ | Terminal-style tabular data |
+| `TerminalPrompt` | 🧪 Beta | ✅ | Interactive prompt patterns |
+| `TerminalProgress` | 🧪 Beta | ✅ | Progress indicators |
+| `TerminalAutocomplete` | 🧪 Beta | ✅ | Command autocomplete with fuzzy matching |
+| `ThemeSwitcher` | ✅ Stable | ✅ | Runtime theme dropdown with localStorage |
+| `GhosttyThemePicker` | 🧪 Beta | ✅ | Ghostty theme parser + picker grid |
+
+> Legend: ✅ Stable = production-ready baseline, 🧪 Beta = usable with active iteration.
+
 ## 🎮 Live Demo
 
 [**→ View the Playground**](https://terminal-ui.vercel.app)
@@ -150,6 +171,7 @@ We **love** contributions! This repo is designed for practice PRs.
 **For Humans:**
 - 📖 [CONTRIBUTING.md](CONTRIBUTING.md) - Contribution guidelines
 - 💡 [GOOD_FIRST_ISSUES.md](GOOD_FIRST_ISSUES.md) - Ideas for PRs
+- 🛡️ [.github/BRANCH_PROTECTION.md](.github/BRANCH_PROTECTION.md) - Recommended merge safeguards
 
 **For AI Agents:**
 - 🤖 [AGENTS.md](AGENTS.md) - Complete agent guide (start here!)
