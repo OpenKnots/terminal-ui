@@ -1,98 +1,44 @@
 'use client'
 
-import { memo, useState } from 'react'
-import type { ReactNode } from 'react'
+import { memo, useCallback, useMemo, useRef, useState } from 'react'
+import type { KeyboardEvent, ReactNode } from 'react'
 
 export interface TreeNode {
-  /**
-   * Node label/name
-   */
   label: string | ReactNode
-  /**
-   * Child nodes
-   */
   children?: TreeNode[]
-  /**
-   * Optional icon or prefix
-   */
   icon?: string
-  /**
-   * Node styling
-   */
   style?: 'normal' | 'success' | 'error' | 'info' | 'warning'
-  /**
-   * Whether node is expanded by default
-   */
   expanded?: boolean
 }
 
 /**
  * Context passed to TerminalTree render-prop callbacks.
- * Provides all metadata needed to render or customise a single tree row.
  */
 export interface TreeRenderContext {
-  /** The tree node data */
   node: TreeNode
-  /** Stable path-based ID for this node (e.g. "root-0-child-1") */
   nodeId: string
-  /** Nesting depth — 0 is root */
   depth: number
-  /** True if this node is the last sibling in its parent */
   isLast: boolean
-  /** True if this node has any children */
   hasChildren: boolean
-  /** True if this node is currently expanded */
   isExpanded: boolean
-  /** Whether the tree allows expand/collapse globally */
   expandable: boolean
-  /** Passthrough of node.icon */
+  isFocused: boolean
   icon: string | undefined
-  /** Passthrough of node.style */
   style: TreeNode['style']
 }
 
 export interface TerminalTreeProps {
-  /**
-   * Root nodes to display
-   */
   nodes: TreeNode[]
-  /**
-   * Whether nodes are expandable (default: true)
-   */
   expandable?: boolean
-  /**
-   * Tree line characters
-   */
   lines?: {
     vertical?: string
     horizontal?: string
     corner?: string
     tee?: string
   }
-  /**
-   * Custom icon renderer per node.
-   * Return a ReactNode to override, or undefined/null to fall back to node.icon.
-   * @param ctx - Render context for this node
-   */
   renderIcon?: (ctx: TreeRenderContext) => ReactNode
-  /**
-   * Custom label renderer per node.
-   * Return a ReactNode to override, or undefined/null to fall back to node.label.
-   * @param ctx - Render context for this node
-   */
   renderLabel?: (ctx: TreeRenderContext) => ReactNode
-  /**
-   * Full row content override — replaces the default expand-button + icon + label.
-   * The structural tree connector is always rendered before this.
-   * When provided, renderIcon and renderLabel are ignored for this node.
-   * @param ctx - Render context for this node
-   */
   renderRow?: (ctx: TreeRenderContext) => ReactNode
-  /**
-   * Callback fired when a node is expanded or collapsed.
-   * @param nodeId - Stable path-based ID of the toggled node
-   * @param expanded - New expansion state (true = now expanded)
-   */
   onToggle?: (nodeId: string, expanded: boolean) => void
 }
 
@@ -105,10 +51,10 @@ const DEFAULT_LINES = {
 
 // ─── Visible-only rendering pipeline ────────────────────────────
 
-/** A single entry in the flattened visible-node list. */
 interface VisibleNode {
   node: TreeNode
   nodeId: string
+  parentId: string | null
   depth: number
   isLast: boolean
   hasChildren: boolean
@@ -116,26 +62,22 @@ interface VisibleNode {
   ancestorIsLast: boolean[]
 }
 
-/**
- * Builds the flat list of nodes that should currently be mounted in the DOM.
- * Nodes whose parent is collapsed are excluded entirely — not just hidden.
- */
 function buildVisibleNodes(
   nodes: TreeNode[],
   expanded: Set<string>,
-  parentId = '',
+  parentId: string | null = null,
   depth = 0,
   ancestorIsLast: boolean[] = [],
 ): VisibleNode[] {
   const result: VisibleNode[] = []
 
   nodes.forEach((node, idx) => {
-    const nodeId = parentId ? `${parentId}-child-${idx}` : `root-${idx}`
+    const nodeId = parentId !== null ? `${parentId}-child-${idx}` : `root-${idx}`
     const isLast = idx === nodes.length - 1
     const hasChildren = !!(node.children && node.children.length > 0)
     const isExpanded = expanded.has(nodeId)
 
-    result.push({ node, nodeId, depth, isLast, hasChildren, isExpanded, ancestorIsLast })
+    result.push({ node, nodeId, parentId, depth, isLast, hasChildren, isExpanded, ancestorIsLast })
 
     if (hasChildren && isExpanded) {
       result.push(
@@ -153,11 +95,10 @@ function buildVisibleNodes(
   return result
 }
 
-/** Builds the initial expanded Set using stable path-based IDs. */
-function buildInitialExpanded(nodes: TreeNode[], parentId = ''): Set<string> {
+function buildInitialExpanded(nodes: TreeNode[], parentId: string | null = null): Set<string> {
   const set = new Set<string>()
   nodes.forEach((node, idx) => {
-    const nodeId = parentId ? `${parentId}-child-${idx}` : `root-${idx}`
+    const nodeId = parentId !== null ? `${parentId}-child-${idx}` : `root-${idx}`
     if (node.expanded) set.add(nodeId)
     if (node.children?.length) {
       buildInitialExpanded(node.children, nodeId).forEach((id) => set.add(id))
@@ -178,8 +119,13 @@ const NODE_STYLE_MAP: Record<string, string> = {
 interface TreeRowProps {
   entry: VisibleNode
   expandable: boolean
+  isFocused: boolean
+  rowRef?: (el: HTMLDivElement | null) => void
   lines: typeof DEFAULT_LINES
   onToggle: (id: string) => void
+  onFocus: (id: string) => void
+  onKeyDown: (e: KeyboardEvent<HTMLDivElement>, entry: VisibleNode, index: number) => void
+  index: number
   renderIcon?: (ctx: TreeRenderContext) => ReactNode
   renderLabel?: (ctx: TreeRenderContext) => ReactNode
   renderRow?: (ctx: TreeRenderContext) => ReactNode
@@ -188,8 +134,13 @@ interface TreeRowProps {
 const TreeRow = memo(function TreeRow({
   entry,
   expandable,
+  isFocused,
+  rowRef,
   lines: l,
   onToggle,
+  onFocus,
+  onKeyDown,
+  index,
   renderIcon: renderIconProp,
   renderLabel: renderLabelProp,
   renderRow: renderRowProp,
@@ -198,7 +149,7 @@ const TreeRow = memo(function TreeRow({
   const colorClass = NODE_STYLE_MAP[node.style ?? ''] ?? 'text-[var(--term-fg)]'
 
   const ctx: TreeRenderContext = {
-    node, nodeId, depth, isLast, hasChildren, isExpanded, expandable,
+    node, nodeId, depth, isLast, hasChildren, isExpanded, expandable, isFocused,
     icon: node.icon,
     style: node.style,
   }
@@ -209,9 +160,14 @@ const TreeRow = memo(function TreeRow({
       <>
         {hasChildren && expandable ? (
           <button
-            onClick={() => onToggle(nodeId)}
+            type="button"
+            tabIndex={-1}
+            aria-hidden
+            onClick={(e) => {
+              e.stopPropagation()
+              onToggle(nodeId)
+            }}
             className="text-[var(--term-blue)] hover:text-[var(--term-cyan)] cursor-pointer w-4 shrink-0"
-            aria-label={isExpanded ? 'Collapse node' : 'Expand node'}
           >
             {isExpanded ? '▼' : '▶'}
           </button>
@@ -227,10 +183,16 @@ const TreeRow = memo(function TreeRow({
 
   return (
     <div
+      ref={rowRef}
       role="treeitem"
       aria-expanded={hasChildren && expandable ? isExpanded : undefined}
       aria-level={depth + 1}
-      className={`flex items-center gap-1 font-mono text-sm ${colorClass}`}
+      tabIndex={isFocused ? 0 : -1}
+      onFocus={() => onFocus(nodeId)}
+      onKeyDown={(e) => onKeyDown(e, entry, index)}
+      className={`flex items-center gap-1 rounded px-1 font-mono text-sm outline-none transition-colors ${colorClass} ${
+        isFocused ? 'bg-[rgba(255,255,255,0.04)] ring-1 ring-[var(--term-blue)]/50' : ''
+      }`}
     >
       {ancestorIsLast.map((ancIsLast, i) => (
         <span key={i} className="text-[var(--term-fg-dim)] w-4 shrink-0 select-none">
@@ -251,13 +213,11 @@ const TreeRow = memo(function TreeRow({
 // ─── TerminalTree ───────────────────────────────────────────────
 
 /**
- * Displays hierarchical data as a tree with expandable nodes.
+ * Displays hierarchical data as a tree with expandable nodes and keyboard navigation.
  *
- * Only visible nodes are mounted in the DOM — collapsed branches are not rendered,
- * making this efficient for large or deeply nested trees.
- *
- * Supports render-prop callbacks for custom icons, labels, and full row overrides,
- * while remaining backward compatible with node.icon / node.label.
+ * Only visible nodes are mounted in the DOM — collapsed branches are not rendered.
+ * Supports ARIA tree keyboard interactions: Arrow keys, Enter, Space.
+ * Supports render-prop callbacks for custom icons, labels, and full row overrides.
  */
 export function TerminalTree({
   nodes,
@@ -271,13 +231,20 @@ export function TerminalTree({
   const [expandedNodes, setExpandedNodes] = useState<Set<string>>(
     () => buildInitialExpanded(nodes),
   )
+  const [focusedNodeId, setFocusedNodeId] = useState<string | null>(null)
+  const rowRefs = useRef<Record<string, HTMLDivElement | null>>({})
 
   const l = { ...DEFAULT_LINES, ...lines }
 
-  const toggleNode = (nodeId: string) => {
+  const visibleNodes = useMemo(
+    () => buildVisibleNodes(nodes, expandedNodes),
+    [nodes, expandedNodes],
+  )
+
+  const toggleNode = useCallback((nodeId: string, forceExpand?: boolean) => {
     setExpandedNodes((prev) => {
       const next = new Set(prev)
-      const willExpand = !next.has(nodeId)
+      const willExpand = forceExpand ?? !next.has(nodeId)
       if (willExpand) {
         next.add(nodeId)
       } else {
@@ -286,19 +253,86 @@ export function TerminalTree({
       onToggle?.(nodeId, willExpand)
       return next
     })
-  }
+  }, [onToggle])
 
-  const visibleNodes = buildVisibleNodes(nodes, expandedNodes)
+  const focusNode = useCallback((nodeId: string) => {
+    setFocusedNodeId(nodeId)
+    const row = rowRefs.current[nodeId]
+    if (row) {
+      row.focus()
+    } else {
+      requestAnimationFrame(() => rowRefs.current[nodeId]?.focus())
+    }
+  }, [])
+
+  const activeNodeId =
+    focusedNodeId && visibleNodes.some((e) => e.nodeId === focusedNodeId)
+      ? focusedNodeId
+      : visibleNodes[0]?.nodeId ?? null
+
+  const handleKeyDown = useCallback((
+    event: KeyboardEvent<HTMLDivElement>,
+    entry: VisibleNode,
+    index: number,
+  ) => {
+    switch (event.key) {
+      case 'ArrowDown': {
+        const next = visibleNodes[index + 1]
+        if (next) { event.preventDefault(); focusNode(next.nodeId) }
+        break
+      }
+      case 'ArrowUp': {
+        const prev = visibleNodes[index - 1]
+        if (prev) { event.preventDefault(); focusNode(prev.nodeId) }
+        break
+      }
+      case 'ArrowRight': {
+        if (!entry.hasChildren || !expandable) break
+        event.preventDefault()
+        if (!entry.isExpanded) {
+          toggleNode(entry.nodeId, true)
+        } else {
+          const firstChild = visibleNodes[index + 1]
+          if (firstChild?.parentId === entry.nodeId) focusNode(firstChild.nodeId)
+        }
+        break
+      }
+      case 'ArrowLeft': {
+        if (!expandable) break
+        if (entry.hasChildren && entry.isExpanded) {
+          event.preventDefault()
+          toggleNode(entry.nodeId, false)
+        } else if (entry.parentId) {
+          event.preventDefault()
+          focusNode(entry.parentId)
+        }
+        break
+      }
+      case 'Enter':
+      case ' ': {
+        if (entry.hasChildren && expandable) {
+          event.preventDefault()
+          toggleNode(entry.nodeId)
+        }
+        break
+      }
+    }
+  }, [visibleNodes, expandable, toggleNode, focusNode])
 
   return (
-    <div role="tree" className="space-y-0 font-mono text-sm text-[var(--term-fg)]">
-      {visibleNodes.map((entry) => (
+    <div role="tree" aria-label="Terminal tree" className="space-y-0 font-mono text-sm text-[var(--term-fg)]">
+      {visibleNodes.map((entry, index) => (
         <TreeRow
           key={entry.nodeId}
+          rowRef={(el: HTMLDivElement | null) => { rowRefs.current[entry.nodeId] = el }}
           entry={entry}
           expandable={expandable}
+          isFocused={activeNodeId === entry.nodeId}
           lines={l}
           onToggle={toggleNode}
+          onFocus={setFocusedNodeId}
+          onKeyDown={handleKeyDown}
+          index={index}
           renderIcon={renderIcon}
           renderLabel={renderLabel}
           renderRow={renderRow}

@@ -4,6 +4,7 @@ import { TerminalProgress } from '@/components/terminal-progress'
 import { LogDemo } from './log-demo'
 import { PromptDemo } from './prompt-demo'
 import { TreeDemo } from './tree-demo'
+import { TreeKeyboardDemo } from './tree-keyboard-demo'
 
 export const metadata = {
   title: 'Playground',
@@ -130,6 +131,16 @@ export default function PlaygroundPage() {
           Expandable tree with custom icon, label, and row render props.
         </p>
         <TreeDemo />
+      </section>
+
+      <section className="flex flex-col gap-2">
+        <h2 className="text-lg font-semibold font-mono text-[var(--term-fg)]">
+          Tree Keyboard Navigation
+        </h2>
+        <p className="text-sm text-[var(--term-fg-dim)] font-mono">
+          Arrow keys to navigate, Enter/Space to toggle, ArrowRight to expand/enter, ArrowLeft to collapse/parent.
+        </p>
+        <TreeKeyboardDemo />
       </section>
 
 
