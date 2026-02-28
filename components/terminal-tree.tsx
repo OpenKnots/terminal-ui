@@ -1,6 +1,7 @@
 'use client'
 
-import { ReactNode, useState } from 'react'
+import { memo, useState } from 'react'
+import type { ReactNode } from 'react'
 
 export interface TreeNode {
   /**
@@ -72,27 +73,17 @@ export interface TerminalTreeProps {
    * Custom icon renderer per node.
    * Return a ReactNode to override, or undefined/null to fall back to node.icon.
    * @param ctx - Render context for this node
-   * @example
-   * ```tsx
-   * renderIcon={({ hasChildren }) => hasChildren ? '📂' : '📄'}
-   * ```
    */
   renderIcon?: (ctx: TreeRenderContext) => ReactNode
   /**
    * Custom label renderer per node.
    * Return a ReactNode to override, or undefined/null to fall back to node.label.
    * @param ctx - Render context for this node
-   * @example
-   * ```tsx
-   * renderLabel={({ node, depth }) => (
-   *   <span style={{ fontWeight: depth === 0 ? 'bold' : 'normal' }}>{node.label}</span>
-   * )}
-   * ```
    */
   renderLabel?: (ctx: TreeRenderContext) => ReactNode
   /**
    * Full row content override — replaces the default expand-button + icon + label.
-   * The structural tree connector (└── / ├──) is always rendered before this.
+   * The structural tree connector is always rendered before this.
    * When provided, renderIcon and renderLabel are ignored for this node.
    * @param ctx - Render context for this node
    */
@@ -112,51 +103,161 @@ const DEFAULT_LINES = {
   tee: '├',
 }
 
+// ─── Visible-only rendering pipeline ────────────────────────────
+
+/** A single entry in the flattened visible-node list. */
+interface VisibleNode {
+  node: TreeNode
+  nodeId: string
+  depth: number
+  isLast: boolean
+  hasChildren: boolean
+  isExpanded: boolean
+  ancestorIsLast: boolean[]
+}
+
 /**
- * Displays hierarchical data as a tree structure with expandable nodes.
- * Renders directory-like structures or nested data using Unicode box-drawing characters
- * with interactive expand/collapse functionality.
+ * Builds the flat list of nodes that should currently be mounted in the DOM.
+ * Nodes whose parent is collapsed are excluded entirely — not just hidden.
+ */
+function buildVisibleNodes(
+  nodes: TreeNode[],
+  expanded: Set<string>,
+  parentId = '',
+  depth = 0,
+  ancestorIsLast: boolean[] = [],
+): VisibleNode[] {
+  const result: VisibleNode[] = []
+
+  nodes.forEach((node, idx) => {
+    const nodeId = parentId ? `${parentId}-child-${idx}` : `root-${idx}`
+    const isLast = idx === nodes.length - 1
+    const hasChildren = !!(node.children && node.children.length > 0)
+    const isExpanded = expanded.has(nodeId)
+
+    result.push({ node, nodeId, depth, isLast, hasChildren, isExpanded, ancestorIsLast })
+
+    if (hasChildren && isExpanded) {
+      result.push(
+        ...buildVisibleNodes(
+          node.children!,
+          expanded,
+          nodeId,
+          depth + 1,
+          [...ancestorIsLast, isLast],
+        ),
+      )
+    }
+  })
+
+  return result
+}
+
+/** Builds the initial expanded Set using stable path-based IDs. */
+function buildInitialExpanded(nodes: TreeNode[], parentId = ''): Set<string> {
+  const set = new Set<string>()
+  nodes.forEach((node, idx) => {
+    const nodeId = parentId ? `${parentId}-child-${idx}` : `root-${idx}`
+    if (node.expanded) set.add(nodeId)
+    if (node.children?.length) {
+      buildInitialExpanded(node.children, nodeId).forEach((id) => set.add(id))
+    }
+  })
+  return set
+}
+
+const NODE_STYLE_MAP: Record<string, string> = {
+  success: 'text-[var(--term-green)]',
+  error: 'text-[var(--term-red)]',
+  info: 'text-[var(--term-blue)]',
+  warning: 'text-[var(--term-yellow)]',
+}
+
+// ─── Memoized TreeRow ───────────────────────────────────────────
+
+interface TreeRowProps {
+  entry: VisibleNode
+  expandable: boolean
+  lines: typeof DEFAULT_LINES
+  onToggle: (id: string) => void
+  renderIcon?: (ctx: TreeRenderContext) => ReactNode
+  renderLabel?: (ctx: TreeRenderContext) => ReactNode
+  renderRow?: (ctx: TreeRenderContext) => ReactNode
+}
+
+const TreeRow = memo(function TreeRow({
+  entry,
+  expandable,
+  lines: l,
+  onToggle,
+  renderIcon: renderIconProp,
+  renderLabel: renderLabelProp,
+  renderRow: renderRowProp,
+}: TreeRowProps) {
+  const { node, nodeId, depth, isLast, hasChildren, isExpanded, ancestorIsLast } = entry
+  const colorClass = NODE_STYLE_MAP[node.style ?? ''] ?? 'text-[var(--term-fg)]'
+
+  const ctx: TreeRenderContext = {
+    node, nodeId, depth, isLast, hasChildren, isExpanded, expandable,
+    icon: node.icon,
+    style: node.style,
+  }
+
+  const rowContent = renderRowProp
+    ? renderRowProp(ctx)
+    : (
+      <>
+        {hasChildren && expandable ? (
+          <button
+            onClick={() => onToggle(nodeId)}
+            className="text-[var(--term-blue)] hover:text-[var(--term-cyan)] cursor-pointer w-4 shrink-0"
+            aria-label={isExpanded ? 'Collapse node' : 'Expand node'}
+          >
+            {isExpanded ? '▼' : '▶'}
+          </button>
+        ) : (
+          <span className="w-4 shrink-0" />
+        )}
+        {renderIconProp
+          ? renderIconProp(ctx)
+          : node.icon && <span className="w-4 shrink-0">{node.icon}</span>}
+        {renderLabelProp ? renderLabelProp(ctx) : <span>{node.label}</span>}
+      </>
+    )
+
+  return (
+    <div
+      role="treeitem"
+      aria-expanded={hasChildren && expandable ? isExpanded : undefined}
+      aria-level={depth + 1}
+      className={`flex items-center gap-1 font-mono text-sm ${colorClass}`}
+    >
+      {ancestorIsLast.map((ancIsLast, i) => (
+        <span key={i} className="text-[var(--term-fg-dim)] w-4 shrink-0 select-none">
+          {ancIsLast ? ' ' : l.vertical}
+        </span>
+      ))}
+
+      <span className="text-[var(--term-fg-dim)] w-8 shrink-0 select-none">
+        {depth > 0 && (isLast ? l.corner : l.tee)}
+        {l.horizontal.repeat(2)}
+      </span>
+
+      {rowContent}
+    </div>
+  )
+})
+
+// ─── TerminalTree ───────────────────────────────────────────────
+
+/**
+ * Displays hierarchical data as a tree with expandable nodes.
+ *
+ * Only visible nodes are mounted in the DOM — collapsed branches are not rendered,
+ * making this efficient for large or deeply nested trees.
  *
  * Supports render-prop callbacks for custom icons, labels, and full row overrides,
- * while remaining fully backward compatible with the existing node.icon / node.label API.
- *
- * @param nodes - Array of root tree nodes with optional children
- * @param expandable - Whether nodes can be expanded/collapsed (default: true)
- * @param lines - Custom tree line characters
- * @param renderIcon - Custom icon renderer; falls back to node.icon
- * @param renderLabel - Custom label renderer; falls back to node.label
- * @param renderRow - Full row content override; skips renderIcon/renderLabel
- * @param onToggle - Callback fired when a node is toggled
- *
- * @example
- * ```tsx
- * // Default usage — icon and label on each node
- * <TerminalTree
- *   nodes={[
- *     { label: 'src/', icon: '📁', children: [
- *       { label: 'index.ts', icon: '📄' }
- *     ]}
- *   ]}
- * />
- *
- * // Custom icon per node type
- * <TerminalTree
- *   nodes={fileNodes}
- *   renderIcon={({ hasChildren, isExpanded }) =>
- *     hasChildren ? (isExpanded ? '📂' : '📁') : '📄'
- *   }
- * />
- *
- * // Custom label formatting
- * <TerminalTree
- *   nodes={depNodes}
- *   renderLabel={({ node, depth }) => (
- *     <span className={depth === 0 ? 'font-bold' : ''}>
- *       {node.label}
- *     </span>
- *   )}
- * />
- * ```
+ * while remaining backward compatible with node.icon / node.label.
  */
 export function TerminalTree({
   nodes,
@@ -167,126 +268,42 @@ export function TerminalTree({
   renderRow,
   onToggle,
 }: TerminalTreeProps) {
-  // Build initial expanded set using stable path-based IDs
-  const [expandedNodes, setExpandedNodes] = useState<Set<string>>(() => {
-    const initial = new Set<string>()
-    function collect(node: TreeNode, id: string) {
-      if (node.expanded) initial.add(id)
-      node.children?.forEach((child, i) => collect(child, `${id}-child-${i}`))
-    }
-    nodes.forEach((node, i) => collect(node, `root-${i}`))
-    return initial
-  })
+  const [expandedNodes, setExpandedNodes] = useState<Set<string>>(
+    () => buildInitialExpanded(nodes),
+  )
 
   const l = { ...DEFAULT_LINES, ...lines }
 
-  const getNodeStyle = (style?: string) => {
-    switch (style) {
-      case 'success': return 'text-[var(--term-green)]'
-      case 'error': return 'text-[var(--term-red)]'
-      case 'info': return 'text-[var(--term-blue)]'
-      case 'warning': return 'text-[var(--term-yellow)]'
-      default: return 'text-[var(--term-fg)]'
-    }
-  }
-
   const toggleNode = (nodeId: string) => {
-    const newExpanded = new Set(expandedNodes)
-    const willExpand = !newExpanded.has(nodeId)
-    if (willExpand) {
-      newExpanded.add(nodeId)
-    } else {
-      newExpanded.delete(nodeId)
-    }
-    setExpandedNodes(newExpanded)
-    onToggle?.(nodeId, willExpand)
+    setExpandedNodes((prev) => {
+      const next = new Set(prev)
+      const willExpand = !next.has(nodeId)
+      if (willExpand) {
+        next.add(nodeId)
+      } else {
+        next.delete(nodeId)
+      }
+      onToggle?.(nodeId, willExpand)
+      return next
+    })
   }
 
-  const renderNodeRow = (node: TreeNode, nodeId: string, depth: number, isLast: boolean) => {
-    const hasChildren = !!(node.children && node.children.length > 0)
-    const isExpanded = expandedNodes.has(nodeId)
-
-    const ctx: TreeRenderContext = {
-      node,
-      nodeId,
-      depth,
-      isLast,
-      hasChildren,
-      isExpanded,
-      expandable,
-      icon: node.icon,
-      style: node.style,
-    }
-
-    const defaultIcon = node.icon ? <span className="w-4">{node.icon}</span> : null
-    const defaultLabel = <span>{node.label}</span>
-
-    const rowContent = renderRow
-      ? renderRow(ctx)
-      : (
-        <>
-          {/* Expand/collapse toggle or spacer */}
-          {hasChildren && expandable ? (
-            <button
-              onClick={() => toggleNode(nodeId)}
-              className="text-[var(--term-blue)] hover:text-[var(--term-cyan)] cursor-pointer w-4"
-              aria-label={isExpanded ? 'Collapse node' : 'Expand node'}
-            >
-              {isExpanded ? '▼' : '▶'}
-            </button>
-          ) : (
-            <span className="w-4" />
-          )}
-          {/* Icon — render-prop takes priority over node.icon */}
-          {renderIcon ? renderIcon(ctx) : defaultIcon}
-          {/* Label — render-prop takes priority over node.label */}
-          {renderLabel ? renderLabel(ctx) : defaultLabel}
-        </>
-      )
-
-    return (
-      <div key={nodeId}>
-        <div
-          role="treeitem"
-          aria-expanded={hasChildren && expandable ? isExpanded : undefined}
-          className={`flex items-center gap-1 font-mono text-sm ${getNodeStyle(node.style)}`}
-        >
-          {/* Structural tree connector — always rendered */}
-          <span className="text-[var(--term-fg-dim)] w-8">
-            {depth > 0 && (isLast ? l.corner : l.tee)}
-            {l.horizontal.repeat(2)}
-          </span>
-          {rowContent}
-        </div>
-
-        {/* Children — only mounted when expanded */}
-        {hasChildren && isExpanded && (
-          <div>
-            {node.children!.map((child, idx) => {
-              const childId = `${nodeId}-child-${idx}`
-              const isLastChild = idx === node.children!.length - 1
-              return (
-                <div key={childId} className="flex">
-                  <span className="text-[var(--term-fg-dim)]">
-                    {depth === 0 ? '' : isLast ? ' ' : l.vertical}
-                  </span>
-                  <div className="flex-1">
-                    {renderNodeRow(child, childId, depth + 1, isLastChild)}
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        )}
-      </div>
-    )
-  }
+  const visibleNodes = buildVisibleNodes(nodes, expandedNodes)
 
   return (
     <div role="tree" className="space-y-0 font-mono text-sm text-[var(--term-fg)]">
-      {nodes.map((node, idx) =>
-        renderNodeRow(node, `root-${idx}`, 0, idx === nodes.length - 1)
-      )}
+      {visibleNodes.map((entry) => (
+        <TreeRow
+          key={entry.nodeId}
+          entry={entry}
+          expandable={expandable}
+          lines={l}
+          onToggle={toggleNode}
+          renderIcon={renderIcon}
+          renderLabel={renderLabel}
+          renderRow={renderRow}
+        />
+      ))}
     </div>
   )
 }
