@@ -62,25 +62,28 @@ export function TerminalHeader({
       {/* Tabs */}
       <div className="flex flex-1 items-center gap-0 overflow-x-auto">
         {tabs.map((tab) => (
-          <button
+          <div
             key={tab.id}
-            onClick={() => onTabChange(tab.id)}
             className={cn(
-              'group relative flex h-10 items-center gap-2 border-r border-[var(--glass-border)] px-4 font-mono text-xs transition-colors',
+              'group relative flex h-10 items-center border-r border-[var(--glass-border)] font-mono text-xs transition-colors',
               activeTab === tab.id
                 ? 'bg-[var(--term-bg)] text-[var(--term-fg)]'
                 : 'text-[var(--term-fg-dim)] hover:bg-[var(--glass-bg)] hover:text-[var(--term-fg)]',
             )}
           >
-            <Monitor size={12} className="shrink-0 opacity-50" />
-            <span className="max-w-[120px] truncate">{tab.title}</span>
+            <button
+              type="button"
+              onClick={() => onTabChange(tab.id)}
+              className="flex h-10 min-w-0 items-center gap-2 px-4"
+              aria-label={`Switch to ${tab.title} tab`}
+            >
+              <Monitor size={12} className="shrink-0 opacity-50" />
+              <span className="max-w-[120px] truncate">{tab.title}</span>
+            </button>
             {tabs.length > 1 && (
               <button
                 type="button"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  onTabClose(tab.id)
-                }}
+                onClick={() => onTabClose(tab.id)}
                 className="ml-1 rounded-sm p-0.5 text-[var(--term-fg-dim)] opacity-0 transition-opacity hover:bg-[var(--glass-bg)] hover:text-[var(--term-fg)] group-hover:opacity-100"
                 aria-label={`Close ${tab.title} tab`}
               >
@@ -90,7 +93,7 @@ export function TerminalHeader({
             {activeTab === tab.id && (
               <span className="absolute bottom-0 left-0 right-0 h-px bg-[var(--term-green)]" />
             )}
-          </button>
+          </div>
         ))}
 
         {/* New tab button */}
