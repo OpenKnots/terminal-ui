@@ -1,5 +1,5 @@
 import { TerminalApp } from '@/components/terminal-app'
-import { Terminal, TerminalCommand, TerminalDiff, TerminalOutput, TerminalSpinner, TerminalBadge, ThemeSwitcher } from '@/components/terminal'
+import { Terminal, TerminalCommand, TerminalDiff, TerminalOutput, TerminalSpinner, TerminalBadge, ThemeSwitcher, TerminalBreadcrumbs } from '@/components/terminal'
 import { TerminalProgress } from '@/components/terminal-progress'
 import { LogDemo } from './log-demo'
 import { PromptDemo } from './prompt-demo'
@@ -157,6 +157,32 @@ export default function PlaygroundPage() {
               <TerminalBadge variant="warning">WARN 2</TerminalBadge>
               <TerminalBadge variant="error">EXIT 1</TerminalBadge>
             </span>
+          </TerminalOutput>
+        </Terminal>
+      </section>
+
+      <section className="flex flex-col gap-2">
+        <h2 className="text-lg font-semibold font-mono text-[var(--term-fg)]">
+          TerminalBreadcrumbs
+        </h2>
+        <Terminal title="breadcrumbs-demo.sh">
+          <TerminalCommand>pwd</TerminalCommand>
+          <TerminalOutput>
+            <TerminalBreadcrumbs items={[
+              { label: '~', href: '#' },
+              { label: 'dev', href: '#' },
+              { label: 'terminal-ui', href: '#' },
+              { label: 'src', active: true }
+            ]} />
+          </TerminalOutput>
+          <div className="mt-4" />
+          <TerminalCommand>cat config.json</TerminalCommand>
+          <TerminalOutput>
+            <TerminalBreadcrumbs separator="›" items={[
+              { label: 'root' },
+              { label: 'settings' },
+              { label: 'theme' }
+            ]} />
           </TerminalOutput>
         </Terminal>
       </section>
