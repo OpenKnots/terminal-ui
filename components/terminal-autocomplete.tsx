@@ -90,7 +90,7 @@ export function TerminalAutocomplete({
           className={`px-3 py-2 cursor-pointer transition-colors ${
             index === selectedIndex
               ? 'bg-[var(--term-blue)] bg-opacity-30'
-              : 'hover:bg-[var(--term-bg-dark)]'
+              : 'hover:bg-[var(--glass-bg)]'
           }`}
           onClick={() => onSelect?.(suggestion)}
         >

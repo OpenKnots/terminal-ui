@@ -35,6 +35,24 @@ function uid() {
   return `t${++globalId}`
 }
 
+/**
+ * Full terminal application with tabs, split panes, and command palette.
+ * Provides a complete terminal emulator experience with window management.
+ * 
+ * @interface Tab
+ * @property {string} id - Unique identifier for the tab
+ * @property {string} title - Display title of the tab
+ * @property {string[]} panes - Array of pane IDs in this tab
+ * 
+ * @example
+ * ```tsx
+ * import { TerminalApp } from '@/components/terminal-app'
+ * 
+ * function App() {
+ *   return <TerminalApp className="h-screen" />
+ * }
+ * ```
+ */
 function TerminalAppInner({ className }: { className?: string }) {
   const { setTheme } = useTheme()
   const [tabs, setTabs] = useState<Tab[]>(() => {

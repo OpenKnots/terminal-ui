@@ -9,6 +9,32 @@ import {
   type ReactNode,
 } from 'react'
 
+/**
+ * Theme system for terminal-ui.
+ * Provides color schemes that can be applied via CSS data-theme attribute.
+ * 
+ * @module terminal-themes
+ * 
+ * @example
+ * ```tsx
+ * import { useTheme, THEMES, ThemeProvider } from '@/components/terminal-themes'
+ * 
+ * function App() {
+ *   return (
+ *     <ThemeProvider>
+ *       <YourApp />
+ *     </ThemeProvider>
+ *   )
+ * }
+ * 
+ * function Component() {
+ *   const { theme, setTheme } = useTheme()
+ *   return <button onClick={() => setTheme('dracula')}>Dracula</button>
+ * }
+ * ```
+ */
+
+/** Available theme definitions with id, display name, and accent color */
 export const THEMES = [
   { id: 'default', name: 'Default', accent: '#10b981' },
   { id: 'dracula', name: 'Dracula', accent: '#bd93f9' },
