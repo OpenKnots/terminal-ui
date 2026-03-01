@@ -31,6 +31,34 @@ interface TerminalHeaderProps {
   onSplit: () => void
 }
 
+/**
+ * Terminal header component with tabs, traffic lights, and theme switcher.
+ * Provides a tabbed interface for terminal sessions with window controls.
+ * 
+ * @interface Tab
+ * @property {string} id - Unique identifier for the tab
+ * @property {string} title - Display title of the tab
+ * 
+ * @interface TerminalHeaderProps
+ * @property {Tab[]} tabs - Array of tab objects to display
+ * @property {string} activeTab - ID of the currently active tab
+ * @property {(id: string) => void} onTabChange - Callback when tab is changed
+ * @property {(id: string) => void} onTabClose - Callback when tab is closed
+ * @property {() => void} onNewTab - Callback when new tab button is clicked
+ * @property {() => void} onSplit - Callback when split button is clicked
+ * 
+ * @example
+ * ```tsx
+ * <TerminalHeader
+ *   tabs={[{ id: '1', title: 'bash' }, { id: '2', title: 'zsh' }]}
+ *   activeTab="1"
+ *   onTabChange={(id) => console.log(id)}
+ *   onTabClose={(id) => console.log(id)}
+ *   onNewTab={() => console.log('new')}
+ *   onSplit={() => console.log('split')}
+ * />
+ * ```
+ */
 export function TerminalHeader({
   tabs,
   activeTab,

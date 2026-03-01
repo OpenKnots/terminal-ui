@@ -10,6 +10,26 @@ interface TerminalStatusBarProps {
   cwd?: string
 }
 
+/**
+ * Terminal status bar displaying shell info, current directory, and pane/tab counts.
+ * Shows at the bottom of the terminal with contextual information.
+ * 
+ * @interface TerminalStatusBarProps
+ * @property {number} paneCount - Number of split panes (shows "X panes" when > 1)
+ * @property {number} tabCount - Number of open tabs (shows "X tabs" when > 1)
+ * @property {string} shell - Shell name to display (default: 'zsh')
+ * @property {string} cwd - Current working directory to display (default: '~')
+ * 
+ * @example
+ * ```tsx
+ * <TerminalStatusBar
+ *   paneCount={2}
+ *   tabCount={3}
+ *   shell="zsh"
+ *   cwd="~/projects"
+ * />
+ * ```
+ */
 export function TerminalStatusBar({
   paneCount,
   tabCount,
