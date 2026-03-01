@@ -34,7 +34,7 @@ pnpm add @openknots/terminal-ui
 ```
 
 ```tsx
-import { Terminal, TerminalCommand } from '@openknots/terminal-ui'
+import { Terminal, TerminalCommand, TerminalOutput } from '@openknots/terminal-ui'
 
 export default function App() {
   return (
@@ -48,19 +48,33 @@ export default function App() {
 
 ## 📦 Components
 
-### Available Now
+### Core Terminal
 
-- **Terminal** - Main container with window chrome
-- **TerminalCommand** - Render a command with prompt
-- **TerminalOutput** - Format command output
-- **TerminalSpinner** - Loading indicators
+- **Terminal** - Main container with window chrome and copy action
+- **TerminalCommand** - Render command lines with prompt context
+- **TerminalOutput** - Semantic output (success/error/info/warning) with optional typing and syntax highlighting
+- **TerminalSpinner** - Animated loading indicator
 
-### Coming Soon (Good First Issues!)
+### Feed and Data Visualization
 
-- **TerminalProgress** - Progress bars → [Issue #2](../../issues/2)
-- **TerminalTable** - Render tables → [Issue #4](../../issues/4)
-- **TerminalTree** - File tree views → [Issue #9](../../issues/9)
-- **TerminalPrompt** - Interactive input → [Issue #12](../../issues/12)
+- **TerminalLog** - Scrolling log buffer with optional auto-scroll
+- **TerminalDiff** - Unified and split terminal-style diffs
+- **TerminalTable** - ASCII table rendering with alignment and striping
+- **TerminalBarChart** / **TerminalSparkline** - ASCII chart primitives
+- **TerminalProgress** - Progress bars with variants and ARIA support
+- **TerminalBadge** - Compact status badges
+- **TerminalAlert** - Dismissible terminal alert blocks
+- **TerminalTree** - Expandable tree with keyboard navigation and render props
+
+### Interactive Controls and Layout
+
+- **TerminalPrompt** - Command input with history navigation
+- **TerminalSelect** - Keyboard-driven option picker
+- **TerminalTabs** - Terminal tab bar component
+- **TerminalSplit** - Resizable two-pane split layout
+- **TerminalAutocomplete** - Suggestion list + `useAutocomplete` helper and suggestion presets
+- **ThemeSwitcher** - Theme chooser for shipped themes
+- **TerminalGhosttyTheme** / **GhosttyThemePicker** - Ghostty theme utilities
 
 ## 📊 Component Status Matrix
 
