@@ -1,5 +1,5 @@
 import { TerminalApp } from '@/components/terminal-app'
-import { Terminal, TerminalCommand, TerminalDiff, TerminalOutput, TerminalSpinner, TerminalBadge, ThemeSwitcher } from '@/components/terminal'
+import { Terminal, TerminalCommand, TerminalDiff, TerminalOutput, TerminalSpinner, TerminalBadge, ThemeSwitcher, TerminalCheckbox, TerminalRadio } from '@/components/terminal'
 import { TerminalProgress } from '@/components/terminal-progress'
 import { LogDemo } from './log-demo'
 import { PromptDemo } from './prompt-demo'
@@ -158,6 +158,27 @@ export default function PlaygroundPage() {
               <TerminalBadge variant="error">EXIT 1</TerminalBadge>
             </span>
           </TerminalOutput>
+        </Terminal>
+      </section>
+
+      <section className="flex flex-col gap-2">
+        <h2 className="text-lg font-semibold font-mono text-[var(--term-fg)]">
+          Form Controls
+        </h2>
+        <Terminal title="config-wizard.sh">
+          <TerminalCommand>./install.sh --interactive</TerminalCommand>
+          <TerminalOutput type="info">Select components to install:</TerminalOutput>
+          <div className="flex flex-col gap-1 mt-2 mb-4 ml-2">
+            <TerminalCheckbox label="Core CLI tools" defaultChecked disabled />
+            <TerminalCheckbox label="Documentation" defaultChecked />
+            <TerminalCheckbox label="Example projects" />
+          </div>
+          <TerminalOutput type="info">Choose default theme:</TerminalOutput>
+          <div className="flex flex-col gap-1 mt-2 ml-2">
+            <TerminalRadio name="wizard-theme" label="Dracula" defaultChecked />
+            <TerminalRadio name="wizard-theme" label="Nord" />
+            <TerminalRadio name="wizard-theme" label="Monokai" />
+          </div>
         </Terminal>
       </section>
 
