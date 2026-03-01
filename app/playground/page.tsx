@@ -1,5 +1,5 @@
 import { TerminalApp } from '@/components/terminal-app'
-import { Terminal, TerminalCommand, TerminalDiff, TerminalOutput, TerminalSpinner, TerminalBadge, ThemeSwitcher } from '@/components/terminal'
+import { Terminal, TerminalCommand, TerminalDiff, TerminalOutput, TerminalSpinner, TerminalBadge, ThemeSwitcher, TerminalBreadcrumb } from '@/components/terminal'
 import { TerminalProgress } from '@/components/terminal-progress'
 import { LogDemo } from './log-demo'
 import { PromptDemo } from './prompt-demo'
@@ -172,6 +172,30 @@ export default function PlaygroundPage() {
           </TerminalOutput>
           <TerminalOutput type="success" animate delay={20}>
             Deployment complete. URL: https://example.app
+          </TerminalOutput>
+        </Terminal>
+      </section>
+
+      <section className="flex flex-col gap-2">
+        <h2 className="text-lg font-semibold font-mono text-[var(--term-fg)]">
+          TerminalBreadcrumb
+        </h2>
+        <p className="text-sm text-[var(--term-fg-dim)] font-mono">
+          Display file paths and navigation breadcrumbs.
+        </p>
+        <Terminal title="breadcrumb-demo.sh">
+          <TerminalCommand>pwd</TerminalCommand>
+          <TerminalOutput type="info">
+            <div className="flex flex-col gap-3">
+              <TerminalBreadcrumb path="~/projects/terminal-ui/components" />
+              <TerminalBreadcrumb path="/usr/local/bin/node" variant="green" />
+              <TerminalBreadcrumb path="~/Documents/notes/2024/march" variant="yellow" />
+              <TerminalBreadcrumb 
+                path="~/src/app/api/routes" 
+                separator=" > " 
+                variant="purple" 
+              />
+            </div>
           </TerminalOutput>
         </Terminal>
       </section>
