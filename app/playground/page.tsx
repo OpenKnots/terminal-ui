@@ -1,5 +1,5 @@
 import { TerminalApp } from '@/components/terminal-app'
-import { Terminal, TerminalCommand, TerminalDiff, TerminalOutput, TerminalSpinner, TerminalBadge, ThemeSwitcher } from '@/components/terminal'
+import { Terminal, TerminalCommand, TerminalDiff, TerminalOutput, TerminalSpinner, TerminalBadge, ThemeSwitcher, TerminalJson } from '@/components/terminal'
 import { TerminalProgress } from '@/components/terminal-progress'
 import { LogDemo } from './log-demo'
 import { PromptDemo } from './prompt-demo'
@@ -172,6 +172,58 @@ export default function PlaygroundPage() {
           </TerminalOutput>
           <TerminalOutput type="success" animate delay={20}>
             Deployment complete. URL: https://example.app
+          </TerminalOutput>
+        </Terminal>
+      </section>
+
+      <section className="flex flex-col gap-2">
+        <h2 className="text-lg font-semibold font-mono text-[var(--term-fg)]">
+          TerminalJson
+        </h2>
+        <p className="text-sm text-[var(--term-fg-dim)] font-mono">
+          Pretty-print JSON with collapsible objects and arrays. Click ▶/▼ to expand/collapse.
+        </p>
+        <Terminal title="api-response.json">
+          <TerminalCommand>curl https://api.example.com/user | jq</TerminalCommand>
+          <TerminalOutput type="info">
+            <TerminalJson
+              data={{
+                user: {
+                  id: 12345,
+                  name: "Alice Johnson",
+                  email: "alice@example.com",
+                  verified: true,
+                  profile: {
+                    avatar: "https://example.com/avatar.jpg",
+                    bio: "Software engineer and open source contributor",
+                    location: "San Francisco, CA",
+                  },
+                  settings: {
+                    theme: "dark",
+                    notifications: {
+                      email: true,
+                      push: false,
+                      sms: false,
+                    },
+                    privacy: {
+                      profileVisible: true,
+                      showEmail: false,
+                    },
+                  },
+                  stats: {
+                    followers: 432,
+                    following: 89,
+                    posts: 156,
+                  },
+                },
+                metadata: {
+                  timestamp: "2024-03-01T10:30:00Z",
+                  version: "2.1.0",
+                  cached: false,
+                },
+              }}
+              collapsedDepth={2}
+            />
           </TerminalOutput>
         </Terminal>
       </section>
