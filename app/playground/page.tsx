@@ -1,5 +1,5 @@
 import { TerminalApp } from '@/components/terminal-app'
-import { Terminal, TerminalCommand, TerminalDiff, TerminalOutput, TerminalSpinner, TerminalBadge, ThemeSwitcher } from '@/components/terminal'
+import { Terminal, TerminalCommand, TerminalDiff, TerminalOutput, TerminalSpinner, TerminalBadge, ThemeSwitcher, TerminalMarkdown } from '@/components/terminal'
 import { TerminalProgress } from '@/components/terminal-progress'
 import { LogDemo } from './log-demo'
 import { PromptDemo } from './prompt-demo'
@@ -172,6 +172,64 @@ export default function PlaygroundPage() {
           </TerminalOutput>
           <TerminalOutput type="success" animate delay={20}>
             Deployment complete. URL: https://example.app
+          </TerminalOutput>
+        </Terminal>
+      </section>
+
+      <section className="flex flex-col gap-2">
+        <h2 className="text-lg font-semibold font-mono text-[var(--term-fg)]">
+          TerminalMarkdown
+        </h2>
+        <p className="text-sm text-[var(--term-fg-dim)] font-mono">
+          Render Markdown content in terminal-styled output.
+        </p>
+        <Terminal title="README.md">
+          <TerminalCommand>cat README.md</TerminalCommand>
+          <TerminalOutput type="info">
+            <TerminalMarkdown
+              content={`# Terminal UI
+
+A **React** component library for building terminal-style interfaces.
+
+## Features
+
+- 🎨 **Beautiful themes** - Dracula, Nord, Monokai, and more
+- ⌨️ **Keyboard navigation** - Full accessibility support
+- 📦 **Zero dependencies** - Lightweight and fast
+- 🎯 **TypeScript** - Fully typed components
+
+## Installation
+
+\`\`\`bash
+npm install @openknots/terminal-ui
+\`\`\`
+
+## Quick Start
+
+\`\`\`tsx
+import { Terminal, TerminalCommand, TerminalOutput } from 'terminal-ui'
+
+<Terminal title="demo">
+  <TerminalCommand>echo "Hello, World!"</TerminalCommand>
+  <TerminalOutput type="success">Hello, World!</TerminalOutput>
+</Terminal>
+\`\`\`
+
+## Components
+
+- \`Terminal\` - Main container with window chrome
+- \`TerminalCommand\` - Display commands with prompt
+- \`TerminalOutput\` - Styled output messages
+- \`TerminalProgress\` - Progress bars
+- \`TerminalTable\` - Data tables
+
+> Use these components to build beautiful CLI experiences in the browser.
+
+---
+
+**License:** MIT | **Author:** [OpenKnots](https://github.com/OpenKnots)
+`}
+            />
           </TerminalOutput>
         </Terminal>
       </section>
