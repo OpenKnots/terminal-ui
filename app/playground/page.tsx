@@ -1,5 +1,5 @@
 import { TerminalApp } from '@/components/terminal-app'
-import { Terminal, TerminalCommand, TerminalDiff, TerminalOutput, TerminalSpinner, TerminalBadge, ThemeSwitcher } from '@/components/terminal'
+import { Terminal, TerminalCommand, TerminalDiff, TerminalOutput, TerminalSpinner, TerminalBadge, ThemeSwitcher, TerminalProgressGroup } from '@/components/terminal'
 import { TerminalProgress } from '@/components/terminal-progress'
 import { LogDemo } from './log-demo'
 import { PromptDemo } from './prompt-demo'
@@ -49,6 +49,40 @@ export default function PlaygroundPage() {
           <TerminalProgress label="Downloading..." percent={62} variant="blue" />
           <TerminalProgress label="Linking dependencies..." percent={88} variant="purple" />
           <TerminalProgress label="Done" percent={100} variant="green" />
+        </Terminal>
+      </section>
+
+      <section className="flex flex-col gap-2">
+        <h2 className="text-lg font-semibold font-mono text-[var(--term-fg)]">
+          TerminalProgressGroup
+        </h2>
+        <p className="text-sm text-[var(--term-fg-dim)] font-mono">
+          Display multiple related progress bars for multi-step tasks.
+        </p>
+        <Terminal title="build-pipeline.sh">
+          <TerminalCommand>run-build</TerminalCommand>
+          <TerminalProgressGroup
+            title="Build Pipeline"
+            items={[
+              { label: 'Compile TypeScript', percent: 100, status: 'complete' },
+              { label: 'Bundle assets', percent: 75, status: 'active', variant: 'blue' },
+              { label: 'Optimize images', percent: 45, status: 'active', variant: 'yellow' },
+              { label: 'Deploy to production', percent: 0, status: 'pending' },
+            ]}
+          />
+        </Terminal>
+        <Terminal title="collapsible-demo.sh">
+          <TerminalCommand>deploy --verbose</TerminalCommand>
+          <TerminalProgressGroup
+            title="Deployment Steps"
+            collapsible
+            items={[
+              { label: 'Build Docker image', percent: 100, status: 'complete' },
+              { label: 'Push to registry', percent: 100, status: 'complete' },
+              { label: 'Update Kubernetes', percent: 100, status: 'complete' },
+              { label: 'Health checks', percent: 100, status: 'complete' },
+            ]}
+          />
         </Terminal>
       </section>
 
