@@ -1,5 +1,5 @@
 import { TerminalApp } from '@/components/terminal-app'
-import { Terminal, TerminalCommand, TerminalDiff, TerminalOutput, TerminalSpinner, TerminalBadge, ThemeSwitcher } from '@/components/terminal'
+import { Terminal, TerminalCommand, TerminalDiff, TerminalOutput, TerminalSpinner, TerminalBadge, ThemeSwitcher, TerminalPager } from '@/components/terminal'
 import { TerminalProgress } from '@/components/terminal-progress'
 import { LogDemo } from './log-demo'
 import { PromptDemo } from './prompt-demo'
@@ -70,6 +70,44 @@ export default function PlaygroundPage() {
           Simulated streaming logs with capped history and auto-scroll.
         </p>
         <LogDemo />
+      </section>
+
+      <section className="flex flex-col gap-2">
+        <h2 className="text-lg font-semibold font-mono text-[var(--term-fg)]">
+          TerminalPager
+        </h2>
+        <p className="text-sm text-[var(--term-fg-dim)] font-mono">
+          Navigate through long content (like less/more). Use Space/↓ for next, b/↑ for previous.
+        </p>
+        <Terminal title="pager-demo.sh">
+          <TerminalCommand>cat long-file.log | less</TerminalCommand>
+          <TerminalPager
+            content={[
+              '[2024-03-01 10:00:01] INFO: Application started',
+              '[2024-03-01 10:00:02] INFO: Database connected',
+              '[2024-03-01 10:00:03] INFO: Cache initialized',
+              '[2024-03-01 10:00:04] DEBUG: Loading configuration',
+              '[2024-03-01 10:00:05] INFO: Server listening on port 3000',
+              '[2024-03-01 10:00:06] INFO: Worker thread 1 started',
+              '[2024-03-01 10:00:07] INFO: Worker thread 2 started',
+              '[2024-03-01 10:00:08] INFO: Worker thread 3 started',
+              '[2024-03-01 10:00:09] INFO: Worker thread 4 started',
+              '[2024-03-01 10:00:10] INFO: Ready to accept connections',
+              '[2024-03-01 10:00:11] INFO: Health check passed',
+              '[2024-03-01 10:00:12] INFO: Metrics endpoint active',
+              '[2024-03-01 10:00:13] DEBUG: Memory usage: 128MB',
+              '[2024-03-01 10:00:14] INFO: First request received',
+              '[2024-03-01 10:00:15] INFO: Request processed in 45ms',
+              '[2024-03-01 10:00:16] INFO: Cache hit ratio: 87%',
+              '[2024-03-01 10:00:17] DEBUG: Connection pool: 5/10',
+              '[2024-03-01 10:00:18] INFO: Batch job scheduled',
+              '[2024-03-01 10:00:19] INFO: Background task started',
+              '[2024-03-01 10:00:20] INFO: System status: healthy',
+            ]}
+            pageSize={8}
+            variant="cyan"
+          />
+        </Terminal>
       </section>
 
       <section className="flex flex-col gap-2">
