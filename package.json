@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "pnpm exec eslint .",
+    "typecheck": "tsc --noEmit",
     "format": "prettier --write ."
   },
   "keywords": [
