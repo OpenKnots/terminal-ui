@@ -264,3 +264,4 @@ export { TerminalAutocomplete, useAutocomplete, COMMON_COMMANDS, COMMON_FLAGS, f
 export { TerminalGhosttyTheme, GhosttyThemePicker } from './terminal-ghostty'
 export { ThemeSwitcher } from './theme-switcher'
 export { TerminalBadge } from './terminal-badge'
+export { TerminalCheckbox, TerminalRadio } from './terminal-checkbox'
