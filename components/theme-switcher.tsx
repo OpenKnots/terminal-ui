@@ -32,21 +32,28 @@ interface ThemeSwitcherProps {
  */
 export function ThemeSwitcher({ className = '' }: ThemeSwitcherProps) {
   const [theme, setTheme] = useState<ThemeId>('dracula')
+  const [mounted, setMounted] = useState(false)
   const validThemeIds = useMemo(() => new Set(THEME_OPTIONS.map((o) => o.id)), [])
 
   useEffect(() => {
+    setMounted(true)
     const saved = localStorage.getItem('terminal-theme')
     const attr = document.documentElement.getAttribute('data-theme')
     const initial = [saved, attr].find(
       (v): v is ThemeId => !!v && validThemeIds.has(v as ThemeId),
     )
-    if (initial) setTheme(initial)
+    if (initial) {
+      setTheme(initial)
+      // Apply immediately to avoid flash if state update takes a tick
+      document.documentElement.setAttribute('data-theme', initial)
+    }
   }, [validThemeIds])
 
   useEffect(() => {
+    if (!mounted) return
     document.documentElement.setAttribute('data-theme', theme)
     localStorage.setItem('terminal-theme', theme)
-  }, [theme])
+  }, [theme, mounted])
 
   return (
     <label className={`inline-flex items-center gap-2 text-sm font-mono text-[var(--term-fg-dim)] ${className}`.trim()}>
