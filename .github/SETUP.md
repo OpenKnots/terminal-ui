@@ -53,7 +53,8 @@ Go to: `https://github.com/OpenKnots/terminal-ui/settings`
 - Set `main` as default branch
 - Add branch protection:
   - ✅ Require pull request reviews before merging
-  - ✅ Require status checks to pass
+  - ✅ Require status checks to pass (`Typecheck & Build`, `Validate Conventional Commit PR title`)
+  - ✅ Keep Vercel preview checks non-blocking unless contributor deploy authorization is enabled
 
 ---
 

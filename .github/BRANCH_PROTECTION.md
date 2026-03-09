@@ -10,6 +10,7 @@ Use this to enable baseline protections for `main`.
 - Require status checks before merging:
   - `Typecheck & Build`
   - `Validate Conventional Commit PR title`
+- Treat Vercel preview checks as optional unless contributor deploy authorization is configured for pull requests
 - Require conversation resolution before merge
 - Restrict force pushes
 - Restrict branch deletion
@@ -37,3 +38,5 @@ gh api \
 ```
 
 > Note: branch protection requires repo admin permissions.
+>
+> If Vercel preview deployments are enabled, avoid adding them as required checks until Git integrations are authorized for external contributors. Otherwise every community PR will appear red for an infrastructure reason unrelated to code quality.
