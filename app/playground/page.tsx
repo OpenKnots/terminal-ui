@@ -1,5 +1,5 @@
 import { TerminalApp } from '@/components/terminal-app'
-import { Terminal, TerminalCommand, TerminalDiff, TerminalOutput, TerminalSpinner, TerminalBadge, ThemeSwitcher } from '@/components/terminal'
+import { Terminal, TerminalCommand, TerminalDiff, TerminalOutput, TerminalSpinner, TerminalBadge, ThemeSwitcher, TerminalKeybinding } from '@/components/terminal'
 import { TerminalProgress } from '@/components/terminal-progress'
 import { LogDemo } from './log-demo'
 import { PromptDemo } from './prompt-demo'
@@ -172,6 +172,30 @@ export default function PlaygroundPage() {
           </TerminalOutput>
           <TerminalOutput type="success" animate delay={20}>
             Deployment complete. URL: https://example.app
+          </TerminalOutput>
+        </Terminal>
+      </section>
+
+      <section className="flex flex-col gap-2">
+        <h2 className="text-lg font-semibold font-mono text-[var(--term-fg)]">
+          TerminalKeybinding
+        </h2>
+        <p className="text-sm text-[var(--term-fg-dim)] font-mono">
+          Display keyboard shortcuts in terminal-style format.
+        </p>
+        <Terminal title="keybindings.sh">
+          <TerminalCommand>show-shortcuts</TerminalCommand>
+          <TerminalOutput type="info">
+            <div className="flex flex-col gap-2">
+              <TerminalKeybinding keys="Ctrl+C" description="Interrupt current process" />
+              <TerminalKeybinding keys="Ctrl+D" description="Exit shell" />
+              <TerminalKeybinding keys="↑" description="Previous command" />
+              <TerminalKeybinding keys="↓" description="Next command" />
+              <TerminalKeybinding keys="Tab" description="Autocomplete" variant="info" />
+              <TerminalKeybinding keys="Cmd+K" description="Clear screen" variant="warning" />
+              <TerminalKeybinding keys="Alt+." description="Insert last argument" />
+              <TerminalKeybinding keys="Ctrl+Shift+P" description="Command palette" variant="success" />
+            </div>
           </TerminalOutput>
         </Terminal>
       </section>
