@@ -5,6 +5,7 @@ import { LogDemo } from './log-demo'
 import { PromptDemo } from './prompt-demo'
 import { TreeDemo } from './tree-demo'
 import { TreeKeyboardDemo } from './tree-keyboard-demo'
+import { NotificationDemo } from './notification-demo'
 
 export const metadata = {
   title: 'Playground',
@@ -174,6 +175,16 @@ export default function PlaygroundPage() {
             Deployment complete. URL: https://example.app
           </TerminalOutput>
         </Terminal>
+      </section>
+
+      <section className="flex flex-col gap-2">
+        <h2 className="text-lg font-semibold font-mono text-[var(--term-fg)]">
+          TerminalNotification
+        </h2>
+        <p className="text-sm text-[var(--term-fg-dim)] font-mono">
+          Toast-style notifications with auto-dismiss. Click buttons to trigger different types.
+        </p>
+        <NotificationDemo />
       </section>
     </main>
   )
