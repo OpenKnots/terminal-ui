@@ -10,6 +10,7 @@ on:
 
 jobs:
   validate-title:
+    name: Validate Conventional Commit PR title
     runs-on: ubuntu-latest
 
     steps:

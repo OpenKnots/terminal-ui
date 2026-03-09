@@ -12,6 +12,7 @@ concurrency:
 
 jobs:
   typecheck-and-build:
+    name: Typecheck & Build
     runs-on: ubuntu-latest
 
     steps:
