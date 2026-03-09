@@ -57,6 +57,30 @@ interface TerminalPaneProps {
   clearSignal?: number
 }
 
+/**
+ * Interactive terminal pane with command input, history, and filesystem simulation.
+ * Provides a fully functional terminal emulator with built-in commands.
+ * 
+ * @interface TerminalPaneProps
+ * @property {string} id - Unique identifier for this pane
+ * @property {() => void} onSplit - Callback when split is requested
+ * @property {() => void} onNewTab - Callback when new tab is requested
+ * @property {number} tabCount - Number of open tabs (default: 1)
+ * @property {boolean} isFocused - Whether this pane is focused (default: true)
+ * @property {() => void} onFocus - Callback when pane receives focus
+ * @property {number} clearSignal - Signal to clear terminal (increment to trigger)
+ * 
+ * @example
+ * ```tsx
+ * <TerminalPane
+ *   id="pane-1"
+ *   onSplit={() => console.log('split')}
+ *   onNewTab={() => console.log('new tab')}
+ *   tabCount={2}
+ *   isFocused={true}
+ * />
+ * ```
+ */
 export function TerminalPane({
   id,
   onSplit,

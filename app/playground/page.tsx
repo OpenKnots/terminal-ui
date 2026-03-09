@@ -1,6 +1,9 @@
 import { TerminalApp } from '@/components/terminal-app'
 import { Terminal, TerminalCommand, TerminalDiff, TerminalOutput, TerminalSpinner, TerminalBadge, ThemeSwitcher } from '@/components/terminal'
 import { TerminalProgress } from '@/components/terminal-progress'
+import { TerminalTable } from '@/components/terminal-table'
+import { TerminalTabs } from '@/components/terminal-tabs'
+import { TerminalSelect } from '@/components/terminal-select'
 import { LogDemo } from './log-demo'
 import { PromptDemo } from './prompt-demo'
 import { TreeDemo } from './tree-demo'
@@ -173,6 +176,71 @@ export default function PlaygroundPage() {
           <TerminalOutput type="success" animate delay={20}>
             Deployment complete. URL: https://example.app
           </TerminalOutput>
+        </Terminal>
+      </section>
+
+      <section className="flex flex-col gap-2">
+        <h2 className="text-lg font-semibold font-mono text-[var(--term-fg)]">
+          TerminalTable
+        </h2>
+        <p className="text-sm text-[var(--term-fg-dim)] font-mono">
+          Data tables with box-drawing characters and alignment options.
+        </p>
+        <Terminal title="table-demo.sh">
+          <TerminalCommand>ls -la /node_modules</TerminalCommand>
+          <TerminalTable
+            headers={['Name', 'Version', 'Size', 'Type']}
+            rows={[
+              ['react', '19.0.0', '142 kB', 'core'],
+              ['next', '15.1.0', '540 kB', 'framework'],
+              ['typescript', '5.7.0', '89 MB', 'language'],
+              ['tailwindcss', '4.0.0', '12 MB', 'utility'],
+            ]}
+            align={['left', 'left', 'right', 'left']}
+            striped
+          />
+        </Terminal>
+      </section>
+
+      <section className="flex flex-col gap-2">
+        <h2 className="text-lg font-semibold font-mono text-[var(--term-fg)]">
+          TerminalTabs
+        </h2>
+        <p className="text-sm text-[var(--term-fg-dim)] font-mono">
+          Tab bar with keyboard navigation (←→ to navigate, Enter to select).
+        </p>
+        <Terminal title="tabs-demo.sh">
+          <TerminalCommand>open tabs</TerminalCommand>
+          <TerminalTabs
+            tabs={[
+              { id: '1', label: 'server.ts', icon: '🔥' },
+              { id: '2', label: 'client.ts', icon: '⚛️' },
+              { id: '3', label: 'config.json', icon: '⚙️' },
+              { id: '4', label: 'styles.css', icon: '🎨' },
+            ]}
+            activeId="1"
+            variant="blue"
+          />
+          <TerminalOutput type="info">
+            Use ← → arrow keys to switch tabs
+          </TerminalOutput>
+        </Terminal>
+      </section>
+
+      <section className="flex flex-col gap-2">
+        <h2 className="text-lg font-semibold font-mono text-[var(--term-fg)]">
+          TerminalSelect
+        </h2>
+        <p className="text-sm text-[var(--term-fg-dim)] font-mono">
+          Dropdown select component styled for terminal aesthetic.
+        </p>
+        <Terminal title="select-demo.sh">
+          <TerminalCommand>select-framework</TerminalCommand>
+          <TerminalSelect
+            label="Choose a framework:"
+            options={['Next.js', 'Nuxt', 'Astro', 'Remix', 'SolidStart']}
+            variant="blue"
+          />
         </Terminal>
       </section>
     </main>
