@@ -1,5 +1,5 @@
 import { TerminalApp } from '@/components/terminal-app'
-import { Terminal, TerminalCommand, TerminalDiff, TerminalOutput, TerminalSpinner, TerminalBadge, ThemeSwitcher } from '@/components/terminal'
+import { Terminal, TerminalCommand, TerminalDiff, TerminalOutput, TerminalSpinner, TerminalBadge, ThemeSwitcher, TerminalAccordion } from '@/components/terminal'
 import { TerminalProgress } from '@/components/terminal-progress'
 import { LogDemo } from './log-demo'
 import { PromptDemo } from './prompt-demo'
@@ -158,6 +158,24 @@ export default function PlaygroundPage() {
               <TerminalBadge variant="error">EXIT 1</TerminalBadge>
             </span>
           </TerminalOutput>
+        </Terminal>
+      </section>
+
+      <section className="flex flex-col gap-2">
+        <h2 className="text-lg font-semibold font-mono text-[var(--term-fg)]">
+          TerminalAccordion
+        </h2>
+        <Terminal title="accordion-demo.sh">
+          <TerminalCommand>npm run test</TerminalCommand>
+          <TerminalOutput type="error">Tests failed: 1 failed, 42 passed</TerminalOutput>
+          <TerminalAccordion title="View Error Stack Trace" className="mt-2">
+            <TerminalOutput type="normal">
+{`Error: Expected received value to equal expected value
+    at Object.<anonymous> (src/utils.test.ts:42:15)
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (node:internal/process/task_queues:96:5)`}
+            </TerminalOutput>
+          </TerminalAccordion>
         </Terminal>
       </section>
 
