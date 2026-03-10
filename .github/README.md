@@ -13,7 +13,7 @@ This directory contains templates and automation for the terminal-ui repository.
 
 ## Quick Start (Maintainers)
 
-After pushing the repo to GitHub:
+After pushing the repo to GitHub
 
 ```bash
 # 1. Create labels first
