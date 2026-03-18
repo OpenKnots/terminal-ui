@@ -243,7 +243,7 @@ export function InteractiveTerminal() {
   return (
     <Terminal title="interactive.sh">
       <div
-        className="h-72 overflow-y-auto pr-2"
+        className="terminal-scroll h-72 overflow-y-auto pr-2"
         onClick={() => inputRef.current?.focus()}
         role="presentation"
       >
