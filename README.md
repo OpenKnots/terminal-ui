@@ -9,6 +9,8 @@
 
 > 🤖 **AI Agent Friendly!** This repo has comprehensive guides for AI agents (OpenClaw, etc.) to contribute automatically. See [AGENTS.md](AGENTS.md) and [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md).
 
+![terminal-ui hero](public/screenshots/hero.png)
+
 ## 🎯 What is this?
 
 A collection of React components that bring the elegance of terminal UIs to the browser. Perfect for:
@@ -48,6 +50,8 @@ export default function App() {
 
 ## 📦 Components
 
+![Playground — interactive demos](public/screenshots/playground.png)
+
 ### Available Now
 
 - **Terminal** - Main container with window chrome
@@ -78,6 +82,13 @@ export default function App() {
 | `TerminalPrompt` | 🧪 Beta | ✅ | Interactive prompt patterns |
 | `TerminalProgress` | 🧪 Beta | ✅ | Progress indicators |
 | `TerminalAutocomplete` | 🧪 Beta | ✅ | Command autocomplete with fuzzy matching |
+
+<details>
+<summary>📸 Full component gallery</summary>
+
+![All components](public/screenshots/components.png)
+
+</details>
 | `ThemeSwitcher` | ✅ Stable | ✅ | Runtime theme dropdown with localStorage |
 | `GhosttyThemePicker` | 🧪 Beta | ✅ | Ghostty theme parser + picker grid |
 
