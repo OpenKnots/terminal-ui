@@ -236,7 +236,17 @@ body {
 .terminal-scroll {
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
+  overscroll-behavior-y: contain;
   touch-action: pan-y;
+  scroll-behavior: smooth;
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+}
+
+/* Prevent body scroll when terminal content is being scrolled (iOS Safari) */
+@supports (-webkit-touch-callout: none) {
+  .terminal-scroll {
+    overflow-y: auto;
+  }
 }
 
 .terminal-code .token.comment,
