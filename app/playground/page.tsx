@@ -5,6 +5,7 @@ import { LogDemo } from './log-demo'
 import { PromptDemo } from './prompt-demo'
 import { TreeDemo } from './tree-demo'
 import { TreeKeyboardDemo } from './tree-keyboard-demo'
+import { KeyboardDemo } from './keyboard-demo'
 
 export const metadata = {
   title: 'Playground',
@@ -159,6 +160,16 @@ export default function PlaygroundPage() {
             </span>
           </TerminalOutput>
         </Terminal>
+      </section>
+
+      <section className="flex flex-col gap-2">
+        <h2 className="text-lg font-semibold font-mono text-[var(--term-fg)]">
+          TerminalKeyboard
+        </h2>
+        <p className="text-sm text-[var(--term-fg-dim)] font-mono">
+          Keyboard shortcut guide with styled key caps. Supports combinations, multi-column layout.
+        </p>
+        <KeyboardDemo />
       </section>
 
       <section className="flex flex-col gap-2">
